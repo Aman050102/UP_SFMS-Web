@@ -1,0 +1,65 @@
+/* src/styles/staffMenu.css */
+/* โทนและเลย์เอาต์เดิม */
+.staff-layout {
+  --bar: #c9a7ff;
+  --bg: #ede7f6;
+  --panel: #ffffff;
+  --text: #1f1b2e;
+  --divider: #e7e2f2;
+  --shadow: 0 14px 32px rgba(39, 20, 81, 0.1);
+
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--bar) 0 72px, var(--bg) 72px 100%);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans Thai",
+    sans-serif;
+}
+
+.section-title {
+  max-width: 1120px;
+  margin: 24px auto 12px;
+  padding: 0 20px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px 20px 36px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tile {
+  text-decoration: none;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--divider);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.tile-inner {
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  place-items: start;
+}
+.tile:hover {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}

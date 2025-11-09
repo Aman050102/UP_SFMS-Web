@@ -1,0 +1,256 @@
+/* ============================
+   REGISTER PAGE — UP-FMS
+   ============================ */
+
+/* ---------- Theme Tokens ---------- */
+:root {
+  --brand: #5f5aa2;
+  --bg: #eef3ff;
+  --card: #ffffff;
+  --text: #1b1a21;
+  --muted: #6b657a;
+  --border: #e1e6ff;
+  --accent: #2858ff;
+  --accent-press: #1f45c7;
+  --shadow: 0 18px 48px rgba(16, 24, 64, 0.12);
+  --radius: 22px;
+}
+
+/* ---------- Lock Page (no scroll) ---------- */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  position: relative;
+  background: linear-gradient(180deg, #f7f9ff, #eaf0ff);
+}
+
+/* ---------- Header (fixed) ---------- */
+.topbar {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(18px, 4vw, 28px);
+  background: rgba(95, 90, 162, 0.92);
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(17, 12, 46, 0.18);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+.brand-small img {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+/* ---------- Layout (ยกการ์ดขึ้น) ---------- */
+.reg-wrap {
+  min-height: 100dvh;
+  padding-top: max(84px, env(safe-area-inset-top));
+  display: grid;
+  place-items: start center;
+}
+.reg-card {
+  width: min(1040px, 92vw);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 30px 28px 26px;
+  box-shadow: var(--shadow);
+  margin: clamp(-32px, -6vh, -12px) auto 0; /* ยกขึ้น */
+  max-height: calc(100dvh - 116px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.title {
+  margin: 0 0 14px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #2a2f49;
+}
+
+/* ถ้าหน้าต่ำมาก ให้เลิกยกขึ้นเพื่อไม่ให้ถูกตัด */
+@media (max-height: 700px) {
+  .reg-card {
+    margin: 0 auto;
+    max-height: calc(100dvh - 100px);
+  }
+}
+
+/* ---------- Role Switch (Segmented) ---------- */
+.segmented-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 16px;
+}
+.segmented {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  max-width: 560px;
+  width: 100%;
+  justify-content: center;
+}
+.segmented button {
+  border: 0;
+  background: #f3f6ff;
+  padding: 18px 26px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  color: #2b2f44;
+  min-width: 230px;
+  font-size: 18px;
+  line-height: 1;
+}
+.segmented [aria-selected="true"] {
+  background: #dfe7ff;
+}
+.segmented-indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 0;
+  background: #2858ff;
+  border-radius: 3px;
+  transition:
+    transform 0.22s,
+    width 0.22s;
+}
+
+/* ---------- Form ---------- */
+.reg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.reg-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 800;
+  color: #2a2f49;
+}
+.reg-form input,
+.reg-form select {
+  padding: 14px 16px;
+  border: 1.8px solid var(--border);
+  border-radius: 16px;
+  font-size: 17px;
+  outline: 0;
+  background: #fff;
+}
+.reg-form input:focus,
+.reg-form select:focus {
+  border-color: #8fb2ff;
+  box-shadow: 0 0 0 4px rgba(40, 88, 255, 0.12);
+}
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.error {
+  color: crimson;
+  font-weight: 800;
+  min-height: 24px;
+}
+.ok {
+  color: #0b7a3b;
+  font-weight: 800;
+  min-height: 24px;
+}
+
+.submit-btn {
+  margin-top: 8px;
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 900;
+  border: 0;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(40, 88, 255, 0.26);
+  font-size: 17px;
+}
+.submit-btn:hover {
+  background: var(--accent-press);
+}
+.hint {
+  text-align: center;
+  color: #666;
+  margin-top: 10px;
+}
+.hint a {
+  color: #2858ff;
+  text-decoration: none;
+}
+.hint a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 1280px) {
+  .reg-card {
+    width: min(1120px, 86vw);
+  }
+}
+@media (max-width: 900px) {
+  .reg-card {
+    width: min(960px, 94vw);
+  }
+}
+@media (max-width: 600px) {
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+  .reg-card {
+    width: 94vw;
+    padding: 24px;
+    border-radius: 18px;
+  }
+  .segmented {
+    gap: 8px;
+    padding: 6px;
+  }
+  .segmented button {
+    min-width: 180px;
+    font-size: 16px;
+    padding: 14px 18px;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Dark Mode ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card: #1f2230;
+    --text: #f4f1ff;
+    --border: #2b3854;
+  }
+  .title {
+    color: #e8ecff;
+  }
+}
