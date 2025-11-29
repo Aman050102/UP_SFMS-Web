@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import UserMenu from "./pages/UserMenu";
 import StaffMenu from "./pages/StaffMenu";
 import CheckinPage from "./pages/CheckinPage";
+import CheckinFeedback from "./pages/CheckinFeedback";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/checkin" element={<CheckinPage />} />
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="/checkin_feedback" element={<CheckinFeedback />} />
     </Routes>
   );
 }

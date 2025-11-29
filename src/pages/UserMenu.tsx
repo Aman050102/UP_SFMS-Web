@@ -1,3 +1,4 @@
+// src/pages/UserMenu.tsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
@@ -5,6 +6,12 @@ import "../styles/menu.css";
 import HeaderUser from "../components/HeaderUser";
 
 const BACKEND = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
+// helper อ่าน CSRF จาก cookie (ใช้ใน logout)
+function getCookie(name: string) {
+  const m = document.cookie.match(new RegExp("(^|; )" + name + "=([^;]+)"));
+  return m ? decodeURIComponent(m[2]) : "";
+}
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -33,6 +40,35 @@ export default function UserMenu() {
     })();
   }, []);
 
+  // --- logout สำหรับนิสิตช่วยงาน ---
+  async function handleLogout(e?: React.MouseEvent) {
+    if (e) e.preventDefault();
+    try {
+      // ขอ CSRF ก่อน
+      await fetch(`${BACKEND}/auth/csrf/`, {
+        credentials: "include",
+      });
+
+      const csrftoken = getCookie("csrftoken");
+
+      const res = await fetch(`${BACKEND}/logout/`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "X-CSRFToken": csrftoken || "" },
+      });
+
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {}
+
+      const nextUrl = data?.next || "/login?role=person";
+      window.location.href = nextUrl;
+    } catch {
+      window.location.href = "/login?role=person";
+    }
+  }
+
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       if (!menuHostRef.current) return;
@@ -50,6 +86,9 @@ export default function UserMenu() {
   return (
     <div data-page="user_menu">
       {/* ===== Header ===== */}
+      {/* ถ้า HeaderUser มีปุ่ม Logout ที่รับ onLogout:
+          <HeaderUser displayName={displayName} BACKEND={BACKEND} onLogout={handleLogout} />
+          แต่ตอนนี้ไม่แตะส่วนอื่นตามที่ขอ */}
       <HeaderUser displayName={displayName} BACKEND={BACKEND} />
 
       {/* ===== Content ===== */}
@@ -59,7 +98,6 @@ export default function UserMenu() {
         <section className="grid" aria-label="เมนูด่วน">
           <a className="tile" href="#" onClick={goCheckin}>
             <div className="tile-inner">
-              {/* ไอคอนเดิม */}
               <b>Check in</b>
               <small>เช็คอินเข้าสนาม</small>
             </div>

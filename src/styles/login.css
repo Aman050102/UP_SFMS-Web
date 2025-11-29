@@ -1,300 +1,161 @@
-/* ============================
-   LOGIN PAGE — UP-FMS
-   ============================ */
-
-/* ---------- Theme Tokens ---------- */
-:root {
-  --brand: #5f5aa2;
-  --bg: #eef3ff;
-  --card: #ffffff;
-  --text: #1b1a21;
-  --muted: #6b657a;
-  --border: #e1e6ff;
-  --accent: #2858ff;
-  --accent-press: #1f45c7;
-  --shadow: 0 18px 48px rgba(16, 24, 64, 0.12);
-  --radius: 22px;
-}
-
-/* ---------- Lock Page (no scroll) ---------- */
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
-body {
-  position: relative;
-  background: linear-gradient(180deg, #f7f9ff, #eaf0ff);
-}
-
-/* ---------- Header (fixed) ---------- */
-.topbar {
-  height: 96px;
+/* พื้นหลังเหมือนต้นฉบับ */
+.login-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #35c8ff, #ff3bb5);
   display: flex;
   align-items: center;
-  padding: 0 clamp(18px, 4vw, 28px);
-  background: rgba(95, 90, 162, 0.92);
-  color: #fff;
-  box-shadow: 0 12px 32px rgba(17, 12, 46, 0.18);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
-.brand-small img {
-  height: 100px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
-}
-
-/* ---------- Layout (ยกการ์ดให้สูงขึ้น) ---------- */
-.wrap {
-  /* เดิม place-items:center ทำให้การ์ดอยู่กลางจอ (ต่ำเกินไปบนเดสก์ท็อป) */
-  min-height: 100dvh; /* รองรับ iPad Safari */
-  padding-top: max(
-    84px,
-    env(safe-area-inset-top)
-  ); /* จาก 96px -> 84px ช่วยดันขึ้น */
-  display: grid;
-  place-items: start center; /* ชิดขึ้นด้านบน */
-}
-.card {
-  width: min(760px, 92vw);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px 26px 24px;
-  box-shadow: var(--shadow);
-  margin: clamp(-32px, -6vh, -12px) auto 0; /* ยกขึ้นแบบปลอดภัยทุกจอ */
-  max-height: calc(100dvh - 116px); /* เผื่อส่วนหัว + margin */
-  overflow: auto; /* ถ้ามีเนื้อหาเยอะ เลื่อนเฉพาะการ์ด */
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ถ้าหน้าต่ำมาก ให้เลิกยกขึ้นเพื่อไม่ให้ถูกตัด */
-@media (max-height: 700px) {
-  .card {
-    margin: 0 auto;
-    max-height: calc(100dvh - 100px);
-  }
-}
-
-/* ---------- Role Switch (Segmented) ---------- */
-.segmented-row {
-  width: 100%;
-  display: flex;
   justify-content: center;
-  margin: 6px 0 14px;
-}
-.segmented {
-  position: relative;
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: 10px;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-}
-.segmented button {
-  border: 0;
-  background: #f3f6ff;
-  padding: 16px 22px;
-  border-radius: 12px;
-  font-weight: 900;
-  cursor: pointer;
-  color: #2b2f44;
-  min-width: 200px;
-  font-size: 17px;
-  line-height: 1;
-}
-.segmented [aria-selected="true"] {
-  background: #dfe7ff;
-}
-.segmented-indicator {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 4px;
-  width: 0;
-  background: #2858ff;
-  border-radius: 3px;
-  transition:
-    transform 0.22s,
-    width 0.22s;
-}
-.segmented-lg button {
-  min-width: 230px;
-  font-size: 18px;
-  padding: 18px 26px;
+  padding: 32px;
+  font-family: "Noto Sans Thai", system-ui, sans-serif;
 }
 
-/* ---------- Form ---------- */
+/* กล่องกลาง */
+.login-card {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 40px 42px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* โลโก้ด้านบน */
+.login-logo img {
+  width: 400px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+/* หัวข้อ */
+.login-title-th {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2b2346;
+}
+
+.login-title-en {
+  margin-top: 10px;
+  margin-bottom: 24px;
+  color: #756f8a;
+  font-size: 0.85rem;
+}
+
+/* ฟอร์ม */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
-.input-row {
+
+.field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2b2346;
+}
+
+.field input {
+  margin-top: 6px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid #d4d0e0;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.field input:focus {
+  border-bottom-color: #ff3bb5;
+}
+
+/* ปุ่ม login */
+.btn-login {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 999px;
+  border: none;
+  color: white;
+  font-weight: 700;
+  background: linear-gradient(90deg, #06b6d4, #ec4899);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: 0.15s;
+}
+
+.btn-login:hover {
+  opacity: 0.9;
+}
+
+/* ปุ่มสีฟ้า-ชมพูตามรูป */
+.btn-secondary {
+  margin-top: 6px;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 999px;
+  border: none;
+  color: white;
+  font-weight: 700;
+  background: linear-gradient(90deg, #4dd0e1, #ec4899);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+/* error */
+.error {
+  color: #e11d48;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.field-input-with-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-input-with-toggle input {
+  flex: 1;
+}
+
+.pw-toggle {
+  border: none;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6366f1;
+  cursor: pointer;
+  padding: 4px 0;
+  white-space: nowrap;
+}
+
+.pw-toggle:hover {
+  opacity: 0.8;
+}
+.field-input-with-toggle {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 14px;
-  border: 1.8px solid var(--border);
-  border-radius: 16px;
-  background: #fff;
-}
-.input-row:focus-within {
-  border-color: #8fb2ff;
-  box-shadow: 0 0 0 4px rgba(40, 88, 255, 0.12);
-}
-.input-row .icon svg {
-  width: 24px;
-  height: 24px;
-  stroke: #2b3f67;
-  fill: none;
-  stroke-width: 2;
-}
-.input-row input {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  padding: 14px 6px;
-  font-size: 17px;
-  color: var(--text);
 }
 
-.icon-btn {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 10px;
-}
-.icon-btn:hover {
-  background: #eef3ff;
-}
-.icon-btn svg {
-  width: 22px;
-  height: 22px;
-  stroke: #2b3f67;
-  fill: none;
-  stroke-width: 2;
-}
-
-.row.meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2px;
-}
-.remember {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #2b3f67;
-  font-weight: 700;
-}
-.forgot {
-  color: #2b3f67;
-  text-decoration: none;
-  font-weight: 700;
-  opacity: 0.9;
-}
-.forgot:hover {
-  text-decoration: underline;
-}
-
-.error-text {
-  color: crimson;
-  font-weight: 800;
-  text-align: center;
-  min-height: 24px;
-}
-
-.login-btn {
-  margin-top: 8px;
+.field-input-with-toggle input {
   width: 100%;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 900;
-  border: 0;
-  border-radius: 16px;
-  padding: 16px;
-  letter-spacing: 0.2px;
+  padding-right: 40px;
+}
+
+.pw-eye-btn {
+  position: absolute;
+  right: 0;
+  bottom: 6px;
+  background: none;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 12px 30px rgba(40, 88, 255, 0.26);
-  font-size: 17px;
-}
-.login-btn:hover {
-  background: var(--accent-press);
+  padding: 4px;
+  color: #7c7894;
 }
 
-.hint {
-  margin-top: 10px;
-  text-align: center;
-  color: #muted;
-  font-weight: 700;
-}
-.hint .link {
-  color: #2858ff;
-  text-decoration: none;
-}
-.hint .link:hover {
-  text-decoration: underline;
-}
-
-/* ---------- Breakpoints ---------- */
-@media (min-width: 1200px) {
-  .card {
-    width: min(820px, 70vw);
-  }
-  .segmented-lg button {
-    min-width: 260px;
-  }
-}
-@media (max-width: 600px) {
-  .card {
-    width: 94vw;
-    padding: 24px;
-    border-radius: 18px;
-  }
-  .segmented {
-    gap: 8px;
-    padding: 6px;
-  }
-  .segmented button {
-    min-width: 160px;
-    font-size: 16px;
-    padding: 14px 18px;
-  }
-}
-
-/* ---------- Accessibility ---------- */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* ---------- Dark Mode ---------- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --card: #1f2230;
-    --text: #f4f1ff;
-    --border: #2b3854;
-  }
-  .input-row .icon svg,
-  .icon-btn svg {
-    stroke: #9db9ff;
-  }
-  .forgot,
-  .remember {
-    color: #c9d7ff;
-  }
+.pw-eye-btn:hover {
+  color: #ec4899;
 }

@@ -68,24 +68,39 @@ export default function StaffMenu() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  // --- ออกจากระบบด้วย fetch + CSRF ---
+  // --- ออกจากระบบด้วย backend ---
   const onLogout = async (e) => {
     e.preventDefault();
     try {
       await primeCsrf();
       const csrftoken = getCookie("csrftoken");
-      await fetch(`${BACKEND}/logout/`, {
+
+      const res = await fetch(`${BACKEND}/logout/`, {
         method: "POST",
         credentials: "include",
         headers: { "X-CSRFToken": csrftoken || "" },
       });
-    } catch {}
-    window.location.href = "/login?role=staff";
+
+      let data = null;
+      try {
+        data = await res.json();
+      } catch {}
+
+      // หาก backend ส่ง next มา → ใช้เลย
+      const nextUrl = data?.next || "/login?role=staff";
+      window.location.href = nextUrl;
+    } catch {
+      window.location.href = "/login?role=staff";
+    }
   };
 
   return (
     <div data-page="staff_menu">
       {/* ===== Header ===== */}
+      {/* ถ้าใน HeaderStaff มีปุ่มออกจากระบบที่รับ onLogout เป็น prop
+          สามารถเปลี่ยนเป็น:
+          <HeaderStaff displayName={displayName} BACKEND={BACKEND} onLogout={onLogout} />
+          ตอนนี้ยังไม่แตะส่วนอื่นตามที่ขอ เลยส่งไปแบบเดิมก่อน */}
       <HeaderStaff displayName={displayName} BACKEND={BACKEND} />
 
       {/* ===== Content ===== */}

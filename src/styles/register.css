@@ -1,256 +1,262 @@
-/* ============================
-   REGISTER PAGE — UP-FMS
-   ============================ */
-
-/* ---------- Theme Tokens ---------- */
 :root {
-  --brand: #5f5aa2;
-  --bg: #eef3ff;
-  --card: #ffffff;
-  --text: #1b1a21;
-  --muted: #6b657a;
-  --border: #e1e6ff;
-  --accent: #2858ff;
-  --accent-press: #1f45c7;
-  --shadow: 0 18px 48px rgba(16, 24, 64, 0.12);
-  --radius: 22px;
+  --gradient-start: #35c8ff;
+  --gradient-end: #ff3bb5;
+  --card-bg: #ffffff;
+  --card-radius: 28px;
+  --card-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  --text-main: #2b2346;
+  --text-muted: #8b86a4;
+  --error: #e11d48;
+  --ok: #16a34a;
 }
 
-/* ---------- Lock Page (no scroll) ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
-body {
+body,
+#root {
   height: 100%;
-  overflow: hidden;
-}
-body {
-  position: relative;
-  background: linear-gradient(180deg, #f7f9ff, #eaf0ff);
 }
 
-/* ---------- Header (fixed) ---------- */
-.topbar {
-  height: 96px;
+body {
+  margin: 0;
+  font-family: "Noto Sans Thai", system-ui, sans-serif;
+}
+
+/* พื้นหลังเหมือนหน้า login */
+.login-bg.reg-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   display: flex;
   align-items: center;
-  padding: 0 clamp(18px, 4vw, 28px);
-  background: rgba(95, 90, 162, 0.92);
-  color: #fff;
-  box-shadow: 0 12px 32px rgba(17, 12, 46, 0.18);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
-.brand-small img {
-  height: 100px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+  justify-content: center;
+  padding: 32px 16px;
 }
 
-/* ---------- Layout (ยกการ์ดขึ้น) ---------- */
-.reg-wrap {
-  min-height: 100dvh;
-  padding-top: max(84px, env(safe-area-inset-top));
-  display: grid;
-  place-items: start center;
-}
-.reg-card {
-  width: min(1040px, 92vw);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 30px 28px 26px;
-  box-shadow: var(--shadow);
-  margin: clamp(-32px, -6vh, -12px) auto 0; /* ยกขึ้น */
-  max-height: calc(100dvh - 116px);
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.title {
-  margin: 0 0 14px;
-  font-size: 30px;
-  font-weight: 900;
-  color: #2a2f49;
-}
-
-/* ถ้าหน้าต่ำมาก ให้เลิกยกขึ้นเพื่อไม่ให้ถูกตัด */
-@media (max-height: 700px) {
-  .reg-card {
-    margin: 0 auto;
-    max-height: calc(100dvh - 100px);
-  }
-}
-
-/* ---------- Role Switch (Segmented) ---------- */
-.segmented-row {
+/* การ์ดกลางจอ */
+.login-card.reg-card {
   width: 100%;
+  max-width: 720px;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 32px 40px 32px;
+}
+
+/* โลโก้ + หัวข้อเหมือนหน้าล็อกอิน */
+.login-logo {
   display: flex;
   justify-content: center;
-  margin: 8px 0 16px;
+  margin-bottom: 12px;
 }
+.login-logo img {
+  width: 500px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.login-title-th {
+  margin: 0;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.login-title-th + .login-title-th {
+  margin-top: 4px;
+}
+.login-title-en {
+  margin-top: 8px;
+  margin-bottom: 14px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.reg-subtitle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+.reg-subtitle strong {
+  color: var(--text-main);
+}
+
+/* segmented ปุ่มเลือกบทบาท */
+.segmented-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
 .segmented {
   position: relative;
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: 10px;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  max-width: 560px;
-  width: 100%;
-  justify-content: center;
+  background: #f5f3ff;
+  border-radius: 999px;
+  padding: 3px;
+  display: inline-flex;
+  gap: 0;
+  min-width: 260px;
 }
+
 .segmented button {
-  border: 0;
-  background: #f3f6ff;
-  padding: 18px 26px;
-  border-radius: 12px;
-  font-weight: 900;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
   cursor: pointer;
-  color: #2b2f44;
-  min-width: 230px;
-  font-size: 18px;
-  line-height: 1;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: color 0.15s ease;
 }
-.segmented [aria-selected="true"] {
-  background: #dfe7ff;
+
+.segmented button[aria-selected="true"] {
+  color: #ffffff;
 }
+
 .segmented-indicator {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 4px;
-  width: 0;
-  background: #2858ff;
-  border-radius: 3px;
-  transition:
-    transform 0.22s,
-    width 0.22s;
+  inset: 3px;
+  width: 50%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #06b6d4, #ec4899);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.35);
+  transition: transform 0.2s ease;
 }
 
-/* ---------- Form ---------- */
+/* layout ฟอร์ม */
 .reg-form {
+  margin-top: 6px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.reg-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-weight: 800;
-  color: #2a2f49;
-}
-.reg-form input,
-.reg-form select {
-  padding: 14px 16px;
-  border: 1.8px solid var(--border);
-  border-radius: 16px;
-  font-size: 17px;
-  outline: 0;
-  background: #fff;
-}
-.reg-form input:focus,
-.reg-form select:focus {
-  border-color: #8fb2ff;
-  box-shadow: 0 0 0 4px rgba(40, 88, 255, 0.12);
-}
+
 .row2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
-.error {
-  color: crimson;
-  font-weight: 800;
-  min-height: 24px;
-}
-.ok {
-  color: #0b7a3b;
-  font-weight: 800;
-  min-height: 24px;
+.field {
+  text-align: left;
 }
 
-.submit-btn {
-  margin-top: 8px;
+.field-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.field-label small {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.field input,
+.field select {
+  margin-top: 6px;
   width: 100%;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 900;
-  border: 0;
-  border-radius: 16px;
-  padding: 16px;
-  cursor: pointer;
-  box-shadow: 0 12px 30px rgba(40, 88, 255, 0.26);
-  font-size: 17px;
-}
-.submit-btn:hover {
-  background: var(--accent-press);
-}
-.hint {
-  text-align: center;
-  color: #666;
-  margin-top: 10px;
-}
-.hint a {
-  color: #2858ff;
-  text-decoration: none;
-}
-.hint a:hover {
-  text-decoration: underline;
+  border: none;
+  border-bottom: 1px solid #d4d0e0;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  outline: none;
 }
 
-/* ---------- Breakpoints ---------- */
-@media (min-width: 1280px) {
-  .reg-card {
-    width: min(1120px, 86vw);
-  }
+.field input:focus,
+.field select:focus {
+  border-bottom-color: var(--gradient-end);
 }
-@media (max-width: 900px) {
-  .reg-card {
-    width: min(960px, 94vw);
-  }
+
+/* ข้อความ error / success */
+.error-msg {
+  margin: 0;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--error);
 }
-@media (max-width: 600px) {
+
+.ok-msg {
+  margin: 0;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--ok);
+}
+
+/* ปุ่ม */
+.btn-login,
+.btn-secondary {
+  margin-top: 12px;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.btn-login {
+  background: linear-gradient(90deg, #06b6d4, #ec4899);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.35);
+}
+
+.btn-secondary {
+  background: linear-gradient(90deg, #4dd0e1, #ec4899);
+}
+
+.btn-login:hover,
+.btn-secondary:hover {
+  opacity: 0.9;
+}
+
+/* จอเล็ก */
+@media (max-width: 640px) {
+  .login-card.reg-card {
+    padding: 28px 20px;
+  }
   .row2 {
     grid-template-columns: 1fr;
   }
-  .reg-card {
-    width: 94vw;
-    padding: 24px;
-    border-radius: 18px;
-  }
-  .segmented {
-    gap: 8px;
-    padding: 6px;
-  }
-  .segmented button {
-    min-width: 180px;
-    font-size: 16px;
-    padding: 14px 18px;
-  }
 }
 
-/* ---------- Accessibility ---------- */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
+.field-input-with-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-/* ---------- Dark Mode ---------- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --card: #1f2230;
-    --text: #f4f1ff;
-    --border: #2b3854;
-  }
-  .title {
-    color: #e8ecff;
-  }
+.field-input-with-toggle input {
+  width: 100%;
+  padding-right: 40px; /* เว้นที่ให้รูปตา */
+}
+
+.pw-eye-btn {
+  position: absolute;
+  right: 0;
+  bottom: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #7c7894;
+}
+
+.pw-eye-btn:hover {
+  color: var(--gradient-end); /* ใช้สีชมพูตามธีม */
 }
