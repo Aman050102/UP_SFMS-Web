@@ -1,30 +1,35 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import UserMenu from "./pages/UserMenu";
-import StaffMenu from "./pages/StaffMenu";
-import CheckinPage from "./pages/CheckinPage";
-import CheckinFeedback from "./pages/CheckinFeedback";
+
+{/* users */}
+import UserMenu from "./pages/users/UserMenu";
+import CheckinPage from "./pages/users/CheckinPage";
+import CheckinFeedback from "./pages/users/CheckinFeedback";
+import EquipmentPage from "./pages/users/EquipmentPage";
+
+{/* staff */}
+import StaffMenu from "./pages/staff/StaffMenu";
+import StaffEquipmentManagePage from "./pages/staff/StaffEquipmentManagePage";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/user/menu" element={<UserMenu />} />
-      <Route
-        path="/staff/menu"
-        element={
-          <StaffMenu
-            displayName="เจ้าหน้าที่"
-            backendBase="http://localhost:8000"
-          />
-        }
-      />
-      <Route path="/checkin" element={<CheckinPage />} />
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
+
+      {/* users */}
+      <Route path="/user/menu" element={<UserMenu />} />
+      <Route path="/checkin" element={<CheckinPage />} />
       <Route path="/checkin_feedback" element={<CheckinFeedback />} />
+      <Route path="/equipment" element={<EquipmentPage />} />
+
+      {/* staff */}
+      <Route path="/staff/menu" element={<StaffMenu />} />
+      <Route path="/staff_equipment" element={<StaffEquipmentManagePage />} />
+
     </Routes>
   );
 }

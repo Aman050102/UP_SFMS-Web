@@ -1,9 +1,9 @@
 // src/pages/StaffMenu.jsx
 import React, { useEffect, useState } from "react";
-import "../styles/global.css";
-import "../styles/header.css";
-import "../styles/menu.css";
-import HeaderStaff from "../components/HeaderStaff";
+import "../../styles/global.css";
+import "../../styles/header.css";
+import "../../styles/menu.css";
+import HeaderStaff from "../../components/HeaderStaff";
 
 const BACKEND = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -97,10 +97,6 @@ export default function StaffMenu() {
   return (
     <div data-page="staff_menu">
       {/* ===== Header ===== */}
-      {/* ถ้าใน HeaderStaff มีปุ่มออกจากระบบที่รับ onLogout เป็น prop
-          สามารถเปลี่ยนเป็น:
-          <HeaderStaff displayName={displayName} BACKEND={BACKEND} onLogout={onLogout} />
-          ตอนนี้ยังไม่แตะส่วนอื่นตามที่ขอ เลยส่งไปแบบเดิมก่อน */}
       <HeaderStaff displayName={displayName} BACKEND={BACKEND} />
 
       {/* ===== Content ===== */}
@@ -200,7 +196,7 @@ export default function StaffMenu() {
             </div>
           </a>
 
-          <a className="tile" href="/staff_badminton_booking">
+          <a className="tile" href="/StaffEquipmentManagePage">
             <div className="tile-inner">
               <svg
                 viewBox="0 0 24 24"

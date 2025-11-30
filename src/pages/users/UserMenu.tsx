@@ -1,9 +1,9 @@
 // src/pages/UserMenu.tsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/global.css";
-import "../styles/menu.css";
-import HeaderUser from "../components/HeaderUser";
+import "../../styles/global.css";
+import "../../styles/menu.css";
+import HeaderUser from "../../components/HeaderUser";
 
 const BACKEND = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 

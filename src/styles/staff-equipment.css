@@ -1,0 +1,406 @@
+/* src/styles/staff-equipment.css */
+
+/* ===== Theme (Staff Equipment) ===== */
+body[data-page="staff-equipment"] {
+  --bg-top: #f9f5ff;
+  --bg-bottom: #eef2ff;
+  --panel: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e0ddf5;
+  --accent: #8b5cf6;
+  --accent-soft: #f3e8ff;
+  --accent-strong: #7c3aed;
+  --accent-dark: #4c1d95;
+  --focus: #7c3aed;
+  --danger: #dc2626;
+  --shadow-soft: 0 6px 20px rgba(88, 28, 135, 0.08);
+  --shadow-strong: 0 16px 36px rgba(76, 29, 149, 0.16);
+
+  background: linear-gradient(
+    180deg,
+    var(--bg-top) 0%,
+    #f5f3ff 40%,
+    var(--bg-bottom) 100%
+  );
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans Thai",
+    sans-serif;
+}
+
+/* ===== Layout ===== */
+body[data-page="staff-equipment"] .staff-equipment-wrap {
+  width: 100%;
+  max-width: 960px;
+  margin: 10px auto 28px;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+body[data-page="staff-equipment"] .wrap.narrower {
+  max-width: 960px;
+}
+
+/* ===== Tabs (เมนูรอง) ===== */
+body[data-page="staff-equipment"] .mainmenu {
+  margin: 4px 0 12px;
+}
+
+body[data-page="staff-equipment"] .mainmenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  gap: 6px;
+}
+
+body[data-page="staff-equipment"] .mainmenu .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(196, 181, 253, 0.9);
+  background: linear-gradient(90deg, #ede9fe, #fdf2ff);
+  color: #4b5563;
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.45);
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+body[data-page="staff-equipment"] .mainmenu .tab.active {
+  background: #ffffff;
+  color: #4c1d95;
+  box-shadow: 0 6px 16px rgba(88, 28, 135, 0.6);
+}
+
+body[data-page="staff-equipment"] .mainmenu .tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(148, 163, 184, 0.55);
+}
+
+/* ===== Page title ===== */
+body[data-page="staff-equipment"] .page-title {
+  margin: 4px 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===== Generic input & button ===== */
+body[data-page="staff-equipment"] .input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  font-size: 14px;
+  background-color: #ffffff;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+body[data-page="staff-equipment"] .input:focus-visible {
+  outline: 0;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+/* main button */
+body[data-page="staff-equipment"] .btn.primary {
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed, #ec4899);
+  color: #ffffff;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 9px 22px rgba(76, 29, 149, 0.55);
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.16s ease,
+    opacity 0.1s ease;
+}
+
+body[data-page="staff-equipment"] .btn.primary .icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+body[data-page="staff-equipment"] .btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(76, 29, 149, 0.65);
+}
+
+body[data-page="staff-equipment"] .btn.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 7px 18px rgba(76, 29, 149, 0.55);
+}
+
+/* ===== Add row ===== */
+body[data-page="staff-equipment"] .add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+body[data-page="staff-equipment"] .add-row .name-input {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+body[data-page="staff-equipment"] .add-row .stock-input {
+  width: 150px;
+}
+
+/* ===== Panel + list ===== */
+body[data-page="staff-equipment"] .panel.equip-panel {
+  margin-top: 4px;
+  background: var(--panel);
+  border-radius: 16px;
+  border: 1px solid rgba(224, 221, 245, 0.9);
+  box-shadow: var(--shadow-soft);
+  padding: 10px 10px 12px;
+  position: relative;
+}
+
+body[data-page="staff-equipment"] .panel.equip-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border-top: 3px solid rgba(129, 140, 248, 0.8);
+  pointer-events: none;
+}
+
+body[data-page="staff-equipment"] .panel.equip-panel:hover {
+  box-shadow: var(--shadow-strong);
+}
+
+/* table head */
+body[data-page="staff-equipment"] .table-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 150px 120px;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #ede9fe, #e0f2fe);
+  font-weight: 600;
+  font-size: 13px;
+  color: #312e81;
+}
+
+/* list rows */
+body[data-page="staff-equipment"] .list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body[data-page="staff-equipment"] .list .empty {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* each row */
+body[data-page="staff-equipment"] .list .row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 150px 120px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(224, 221, 245, 0.9);
+  font-size: 13px;
+}
+
+body[data-page="staff-equipment"] .list .row:nth-child(odd) {
+  background: #faf5ff;
+}
+
+/* name column */
+body[data-page="staff-equipment"] .name-wrap {
+  min-width: 0;
+}
+
+body[data-page="staff-equipment"] .name {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: text;
+}
+
+body[data-page="staff-equipment"] .name-edit {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* stock stepper */
+body[data-page="staff-equipment"] .inline-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+body[data-page="staff-equipment"] .inline-edit .stock {
+  width: 70px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 6px 4px;
+  font-weight: 600;
+}
+
+body[data-page="staff-equipment"] .icon-btn {
+  border-radius: 999px;
+  border: none;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.08s ease;
+}
+
+/* steppers (+/-) */
+body[data-page="staff-equipment"] .icon-btn.steper {
+  background: radial-gradient(circle at 30% 0%, #f5f3ff, #c4b5fd);
+  color: #312e81;
+  box-shadow: 0 3px 9px rgba(129, 140, 248, 0.45);
+}
+
+body[data-page="staff-equipment"] .icon-btn.steper:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(129, 140, 248, 0.55);
+}
+
+body[data-page="staff-equipment"] .icon-btn.steper:active {
+  transform: translateY(0);
+}
+
+/* actions */
+body[data-page="staff-equipment"] .actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+body[data-page="staff-equipment"] .icon-btn.save {
+  background: #bbf7d0;
+  color: #064e3b;
+  box-shadow: 0 3px 9px rgba(22, 163, 74, 0.4);
+}
+
+body[data-page="staff-equipment"] .icon-btn.save:hover {
+  background: #86efac;
+}
+
+body[data-page="staff-equipment"] .icon-btn.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  box-shadow: 0 3px 9px rgba(248, 113, 113, 0.45);
+}
+
+body[data-page="staff-equipment"] .icon-btn.danger:hover {
+  background: #fecaca;
+}
+
+/* ===== Sheet (toast) ===== */
+body[data-page="staff-equipment"] .sheet {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+  z-index: 40;
+}
+
+body[data-page="staff-equipment"] .sheet[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+body[data-page="staff-equipment"] .sheet-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.6);
+}
+
+body[data-page="staff-equipment"] .sheet-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+body[data-page="staff-equipment"] .sheet-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 3px solid #111827;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="staff-equipment"] * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  body[data-page="staff-equipment"] .panel.equip-panel,
+  body[data-page="staff-equipment"] .table-head,
+  body[data-page="staff-equipment"] .list .row {
+    grid-template-columns: 1.1fr 120px 90px;
+  }
+
+  body[data-page="staff-equipment"] .add-row {
+    align-items: stretch;
+  }
+
+  body[data-page="staff-equipment"] .add-row .stock-input {
+    width: 120px;
+  }
+}
