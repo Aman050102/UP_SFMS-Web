@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import HeaderStaff from "../../components/HeaderStaff";
 import "../../styles/staff-equipment.css";
 
-// ------ BACKEND & Helpers ------
+// ===== BACKEND & Helpers =====
 
-// ใช้ BASE_URL จาก .env ถ้าไม่มีใช้ origin เดียวกับ frontend
-const BACKEND = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+// ใช้ BASE_URL จาก .env (เช่น http://localhost:8000)
+const BACKEND = (
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
+).replace(/\/$/, "");
 
 // endpoint ฝั่ง staff
 const API_LIST = `${BACKEND}/api/staff/equipments/`;
@@ -26,7 +28,7 @@ const clampInt = (n) => {
 
 const toKeyName = (s) => (s || "").trim().toLowerCase();
 
-// ------ Component ------
+// ===== Component =====
 
 export default function StaffEquipmentManagePage() {
   const [items, setItems] = useState([]);
@@ -38,7 +40,7 @@ export default function StaffEquipmentManagePage() {
   const [editingNameId, setEditingNameId] = useState(null);
   const [editingNameValue, setEditingNameValue] = useState("");
 
-  // ชื่อเจ้าหน้าที่ที่โชว์บน Header
+  // ชื่อเจ้าหน้าที่บน Header
   const [displayName, setDisplayName] = useState(
     localStorage.getItem("display_name") || "เจ้าหน้าที่"
   );
@@ -51,7 +53,7 @@ export default function StaffEquipmentManagePage() {
     };
   }, []);
 
-  // ดึงข้อมูล user จาก backend (กันกรณียังไม่ได้เปิด StaffMenu มาก่อน)
+  // โหลดชื่อ user (กันกรณียังไม่เคยเข้า StaffMenu)
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -73,7 +75,7 @@ export default function StaffEquipmentManagePage() {
     loadUser();
   }, []);
 
-  // load equipment list
+  // โหลดรายการอุปกรณ์จาก backend
   const fetchList = async () => {
     try {
       const res = await fetch(API_LIST, {
@@ -81,6 +83,7 @@ export default function StaffEquipmentManagePage() {
         credentials: "include",
       });
       if (!res.ok) {
+        console.error("LOAD_EQUIP_FAILED", res.status, res.statusText);
         alert("โหลดรายการไม่สำเร็จ");
         return;
       }
@@ -289,7 +292,7 @@ export default function StaffEquipmentManagePage() {
 
   return (
     <div data-page="staff-equipment">
-      {/* ส่ง displayName + BACKEND ให้ HeaderStaff แบบเดียวกับ StaffMenu */}
+      {/* ส่ง displayName + BACKEND เข้า HeaderStaff ให้หน้าตาเหมือนหน้า staff อื่น */}
       <HeaderStaff displayName={displayName} BACKEND={BACKEND} />
 
       <main className="wrap narrower staff-equipment-wrap">
@@ -297,13 +300,11 @@ export default function StaffEquipmentManagePage() {
         <nav className="mainmenu" aria-label="เมนูรอง">
           <ul>
             <li>
-              {/* ใช้ path /staff_equipment ให้ตรงกับ tile เดิม */}
               <a className="tab active" href="/staff_equipment">
                 ✓ จัดการอุปกรณ์กีฬา
               </a>
             </li>
             <li>
-              {/* อันนี้เตรียมไว้ให้หน้า ledger อนาคต */}
               <a className="tab" href="/staff/borrow-ledger">
                 บันทึกการยืม-คืน
               </a>

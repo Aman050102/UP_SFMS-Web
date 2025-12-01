@@ -11,6 +11,7 @@ import EquipmentPage from "./pages/users/EquipmentPage";
 {/* staff */}
 import StaffMenu from "./pages/staff/StaffMenu";
 import StaffEquipmentManagePage from "./pages/staff/StaffEquipmentManagePage";
+import StaffBorrowLedgerPage from "./pages/staff/StaffBorrowLedgerPage";
 
 export default function App() {
   return (
@@ -29,6 +30,8 @@ export default function App() {
       {/* staff */}
       <Route path="/staff/menu" element={<StaffMenu />} />
       <Route path="/staff_equipment" element={<StaffEquipmentManagePage />} />
+      <Route path="/staff/borrow-ledger" element={<StaffBorrowLedgerPage />} />
+
 
     </Routes>
   );

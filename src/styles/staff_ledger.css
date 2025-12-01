@@ -1,0 +1,302 @@
+/* ============================================
+   Staff Borrow Ledger – Theme Like Staff Equipment
+   ============================================ */
+
+/* ===== Theme Colors ===== */
+body[data-page="staff-borrow-ledger"] {
+  --bg-top: #f9f5ff;
+  --bg-bottom: #eef2ff;
+  --panel: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e0ddf5;
+  --accent: #8b5cf6;
+  --accent-soft: #f3e8ff;
+  --accent-strong: #7c3aed;
+  --accent-dark: #4c1d95;
+  --focus: #7c3aed;
+  --danger: #dc2626;
+  --shadow-soft: 0 6px 20px rgba(88, 28, 135, 0.08);
+  --shadow-strong: 0 16px 36px rgba(76, 29, 149, 0.16);
+
+  background: linear-gradient(
+    180deg,
+    var(--bg-top) 0%,
+    #f5f3ff 35%,
+    var(--bg-bottom) 100%
+  );
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Noto Sans Thai",
+    sans-serif;
+}
+
+/* ===== Layout ===== */
+body[data-page="staff-borrow-ledger"] .wrap {
+  width: 100%;
+  max-width: 960px;
+  margin: 12px auto 30px;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+/* ===== Tabs ===== */
+body[data-page="staff-borrow-ledger"] .mainmenu {
+  margin: 4px 0 14px;
+}
+
+body[data-page="staff-borrow-ledger"] .mainmenu ul {
+  list-style: none;
+  display: inline-flex;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+body[data-page="staff-borrow-ledger"] .mainmenu .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(196, 181, 253, 0.9);
+  background: linear-gradient(90deg, #ede9fe, #fdf2ff);
+  color: #4b5563;
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.45);
+
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+body[data-page="staff-borrow-ledger"] .mainmenu .tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(148, 163, 184, 0.55);
+}
+
+body[data-page="staff-borrow-ledger"] .mainmenu .tab.active {
+  background: #ffffff;
+  color: #4c1d95;
+  box-shadow: 0 6px 18px rgba(88, 28, 135, 0.6);
+}
+
+/* ===== Page title ===== */
+body[data-page="staff-borrow-ledger"] .page-title {
+  margin: 4px 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e1a33;
+}
+
+/* ===== Filter ===== */
+body[data-page="staff-borrow-ledger"] .filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin: 10px 0 20px;
+}
+
+body[data-page="staff-borrow-ledger"] .fld {
+  display: grid;
+  gap: 6px;
+}
+
+body[data-page="staff-borrow-ledger"] .fld > span {
+  font-weight: 700;
+  font-size: 13px;
+  color: #4c1d95;
+}
+
+body[data-page="staff-borrow-ledger"]
+  .fld
+  input[type="text"],
+body[data-page="staff-borrow-ledger"]
+  .fld
+  input[type="date"] {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 600;
+
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+body[data-page="staff-borrow-ledger"]
+  .fld
+  input:focus-visible {
+  outline: 0;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+/* ===== Buttons ===== */
+body[data-page="staff-borrow-ledger"] .btn {
+  border-radius: 999px;
+  border: none;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-page="staff-borrow-ledger"] .btn.primary {
+  background: linear-gradient(135deg, #4c1d95, #7c3aed, #ec4899);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(76, 29, 149, 0.55);
+
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+body[data-page="staff-borrow-ledger"] .btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 13px 28px rgba(76, 29, 149, 0.65);
+}
+
+/* filler flex */
+body[data-page="staff-borrow-ledger"] .flex1 {
+  flex: 1;
+}
+
+/* ===== Panel ===== */
+body[data-page="staff-borrow-ledger"] .panel {
+  background: var(--panel);
+  border-radius: 20px;
+  border: 1px solid rgba(224, 221, 245, 0.9);
+  box-shadow: var(--shadow-soft);
+  padding: 14px 14px 16px;
+  position: relative;
+}
+
+body[data-page="staff-borrow-ledger"] .panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  border-top: 3px solid rgba(129, 140, 248, 0.75);
+}
+
+body[data-page="staff-borrow-ledger"] .result-info {
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: var(--muted);
+}
+
+/* ===== Daily Groups ===== */
+body[data-page="staff-borrow-ledger"] .day-groups {
+  display: grid;
+  gap: 18px;
+}
+
+body[data-page="staff-borrow-ledger"] .day-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #ece7fb;
+  background: linear-gradient(180deg, #faf9ff, #ffffff);
+}
+
+body[data-page="staff-borrow-ledger"] .day-title {
+  background: linear-gradient(90deg, #ede9fe, #e0f2fe);
+  padding: 12px 16px;
+  color: #312e81;
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body[data-page="staff-borrow-ledger"] .day-title .date {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+body[data-page="staff-borrow-ledger"] .day-title .count {
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+/* ===== Table ===== */
+body[data-page="staff-borrow-ledger"] .table-wrap {
+  overflow: auto;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  background: #fff;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table thead th {
+  background: #f5efff;
+  font-weight: 700;
+  font-size: 13px;
+  color: #312e81;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table th,
+body[data-page="staff-borrow-ledger"] .ledger-table td {
+  border-bottom: 1px solid #eee7ff;
+  padding: 11px 12px;
+  font-size: 13px;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table tbody tr:nth-child(odd) {
+  background: #faf5ff;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table tbody tr:hover {
+  background: #f6f3ff;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table .sid .mono {
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+body[data-page="staff-borrow-ledger"] .ledger-table .fac {
+  color: #3d336a;
+  font-weight: 600;
+}
+
+/* ===== Time badge ===== */
+body[data-page="staff-borrow-ledger"] .time-badge {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 12px;
+  background: #f5f1ff;
+  border: 1px solid #e8e2ff;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 760px) {
+  body[data-page="staff-borrow-ledger"] .ledger-table th,
+  body[data-page="staff-borrow-ledger"] .ledger-table td {
+    font-size: 12px;
+  }
+}
