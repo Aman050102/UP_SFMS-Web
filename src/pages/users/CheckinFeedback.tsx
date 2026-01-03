@@ -1,40 +1,40 @@
+// src/pages/CheckinFeedback.tsx
 import React, { useEffect, useState } from "react";
 import HeaderUser from "../../components/HeaderUser";
 import "../../styles/checkin_feedback.css";
 
-const BACKEND =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+const BACKEND = (
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
+).replace(/\/$/, "");
 
-type FacilityKey = "outdoor" | "badminton" | "track" | "pool";
-
-const FACILITY_LABELS: Record<FacilityKey, string> = {
+const FACILITY_LABELS = {
   outdoor: "สนามกลางแจ้ง",
   badminton: "สนามแบดมินตัน",
   track: "สนามลู่-ลาน",
   pool: "สระว่ายน้ำ",
 };
 
-const formatThaiDate = (date: Date): string => {
+function formatThaiDate(date) {
   const parts = new Intl.DateTimeFormat("th-TH", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).formatToParts(date);
+  const thaiYear = date.getFullYear() + 543;
+  return parts
+    .map((p) => (p.type === "year" ? String(thaiYear) : p.value))
+    .join("");
+}
 
-  const year = date.getFullYear() + 543;
-  return parts.map(p => (p.type === "year" ? String(year) : p.value)).join("");
-};
-
-export default function CheckinFeedback(): JSX.Element {
-  const [facility, setFacility] = useState<FacilityKey>("outdoor");
+export default function CheckinFeedback() {
+  const [facility, setFacility] = useState(null);
   const [staffName, setStaffName] = useState("ผู้ใช้งาน");
   const [problems, setProblems] = useState("");
   const [detail, setDetail] = useState("");
   const [suggest, setSuggest] = useState("");
   const [improve, setImprove] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -43,149 +43,298 @@ export default function CheckinFeedback(): JSX.Element {
   const todayStr = today.toISOString().slice(0, 10);
   const todayThai = formatThaiDate(today);
 
-  // --- init ---
+  // ตรวจสิทธิ์เข้าแบบประเมิน: ต้องเช็คอิน "ประเภทสนามนี้" ครบก่อน
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const fac = params.get("facility") as FacilityKey | null;
+    const search = new URLSearchParams(window.location.search);
+    const facParam = search.get("facility") || "outdoor";
+    const allowed = ["outdoor", "badminton", "track", "pool"];
+    const fac = allowed.includes(facParam) ? facParam : "outdoor";
+    setFacility(fac);
 
-    const allowed: FacilityKey[] = ["outdoor", "badminton", "track", "pool"];
-    const current = allowed.includes(fac as FacilityKey)
-      ? fac!
-      : "outdoor";
-
-    setFacility(current);
-
+    // ตรวจว่าเช็คอินครบแล้วหรือยัง
+    let canAccess = false;
     try {
-      const doneRaw = localStorage.getItem("checkin_facility_done");
-      if (doneRaw) {
-        const parsed = JSON.parse(doneRaw);
-        if (parsed.date === todayStr && parsed.facilities?.[current]) {
-          alert("คุณได้ส่งแบบประเมินของสนามนี้ไปแล้ว");
-          window.location.href = "/checkin";
+      const rawDone = localStorage.getItem("checkin_facility_done");
+      if (rawDone) {
+        const parsed = JSON.parse(rawDone);
+        if (
+          parsed.date === todayStr &&
+          parsed.facilities &&
+          parsed.facilities[fac]
+        ) {
+          canAccess = true;
         }
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
-    const name =
-      (window as any).CURRENT_USER ||
-      localStorage.getItem("display_name") ||
-      "ผู้ใช้งาน";
-    setStaffName(name);
+    if (!canAccess) {
+      alert(
+        "กรุณาเช็คอินสนามประเภทนี้ให้ครบก่อน แล้วจึงทำแบบประเมิน"
+      );
+      window.location.href = "/checkin";
+      return;
+    }
+
+    // ถ้าเคยส่งแบบประเมินของสนามนี้แล้วในวันนี้ จะเตือน
+    try {
+      const rawFb = localStorage.getItem("checkin_facility_feedback");
+      if (rawFb) {
+        const parsed = JSON.parse(rawFb);
+        if (
+          parsed.date === todayStr &&
+          parsed.facilities &&
+          parsed.facilities[fac]
+        ) {
+          const label = FACILITY_LABELS[fac] || "สนามนี้";
+          const goBack = window.confirm(
+            `วันนี้ส่งแบบประเมินสำหรับ${label}แล้ว\nต้องการกลับไปหน้าเช็คอินหรือไม่?`
+          );
+          if (goBack) {
+            window.location.href = "/checkin";
+            return;
+          }
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+
+    // ดึงชื่อผู้ใช้จาก global / localStorage
+    const dn =
+      window.CURRENT_USER || localStorage.getItem("display_name") || "ผู้ใช้งาน";
+    setStaffName(dn);
   }, [todayStr]);
 
+  const onFileChange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    setFile(f || null);
+  };
+
   const canSubmit =
-    problems.trim() ||
-    detail.trim() ||
-    suggest.trim() ||
-    improve.trim() ||
+    problems.trim() !== "" ||
+    detail.trim() !== "" ||
+    suggest.trim() !== "" ||
+    improve.trim() !== "" ||
     !!file;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setOk("");
 
     if (!canSubmit) {
-      setError("กรุณากรอกข้อมูลอย่างน้อย 1 ช่อง");
+      setError("กรุณากรอกอย่างน้อย 1 ช่อง หรือแนบไฟล์ก่อนส่งแบบประเมิน");
       return;
     }
 
     try {
       setSubmitting(true);
 
-      const form = new FormData();
-      form.append("date", todayStr);
-      form.append("facility", facility);
-      form.append("facility_label", FACILITY_LABELS[facility]);
-      form.append("staff_name", staffName);
-      form.append("problems", problems);
-      form.append("detail", detail);
-      form.append("suggest", suggest);
-      form.append("improve", improve);
-      if (file) form.append("file", file);
-
-      // 🔧 backend endpoint
-      // await fetch(`${BACKEND}/api/checkin/feedback/`, { method: "POST", body: form });
-
-      console.log("SUBMIT:", Object.fromEntries(form.entries()));
-
-      // mark completed
-      const stored = JSON.parse(
-        localStorage.getItem("checkin_facility_feedback") || "{}"
+      const formData = new FormData();
+      formData.append("date", todayStr);
+      formData.append("facility", facility || "");
+      formData.append(
+        "facility_label",
+        FACILITY_LABELS[facility] || "สนามกีฬา"
       );
-      stored.date = todayStr;
-      stored.facilities = { ...(stored.facilities || {}), [facility]: true };
-      localStorage.setItem(
-        "checkin_facility_feedback",
-        JSON.stringify(stored)
+      formData.append("staff_name", staffName);
+      formData.append("problems", problems);
+      formData.append("detail", detail);
+      formData.append("suggest", suggest);
+      formData.append("improve", improve);
+      if (file) {
+        formData.append("register_file", file);
+      }
+
+      // TODO: ถ้า backend พร้อมให้ยิง endpoint นี้
+      // await fetch(`${BACKEND}/api/checkin/feedback/`, {
+      //   method: "POST",
+      //   body: formData,
+      // });
+
+      console.log(
+        "CHECKIN_FEEDBACK_FORM",
+        Object.fromEntries(formData.entries())
       );
 
-      setOk(`บันทึกแบบประเมิน ${FACILITY_LABELS[facility]} เรียบร้อยแล้ว`);
+      // mark ว่าวันนี้ประเมินสนามนี้แล้ว
+      try {
+        let facilities = {};
+        const rawFb = localStorage.getItem("checkin_facility_feedback");
+        if (rawFb) {
+          const parsed = JSON.parse(rawFb);
+          if (
+            parsed.date === todayStr &&
+            typeof parsed.facilities === "object"
+          ) {
+            facilities = parsed.facilities;
+          }
+        }
+        facilities[facility] = true;
+        localStorage.setItem(
+          "checkin_facility_feedback",
+          JSON.stringify({ date: todayStr, facilities })
+        );
+      } catch {
+        /* ignore */
+      }
+
+      const label = FACILITY_LABELS[facility] || "สนามกีฬา";
+      setOk(`บันทึกแบบประเมินสนาม${label}เรียบร้อย ขอบคุณสำหรับข้อมูล :)`);
       setProblems("");
       setDetail("");
       setSuggest("");
       setImprove("");
       setFile(null);
-    } catch {
-      setError("ไม่สามารถบันทึกข้อมูลได้");
+    } catch (err) {
+      setError("บันทึกแบบประเมินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSubmitting(false);
     }
   };
 
+  const onBackToMenu = () => {
+    window.location.href = "/user/menu";
+  };
+
+  const displayName =
+    window.CURRENT_USER || localStorage.getItem("display_name") || "ผู้ใช้งาน";
+
+  const facilityLabel = FACILITY_LABELS[facility] || "สนามกีฬา";
+
   return (
     <div data-page="checkin-feedback" className="wrap">
-      <HeaderUser displayName={staffName} BACKEND={BACKEND} />
-
+      <HeaderUser displayName={displayName} BACKEND={BACKEND} />
       <main>
-        <section className="fb-card">
+        <section className="fb-card" aria-label="แบบประเมินปัญหาประจำวัน">
+          {/* หัวข้อ */}
           <header className="fb-header">
-            <h1>แบบประเมินการใช้งาน{FACILITY_LABELS[facility]}</h1>
+            <h1>
+              แบบประเมินปัญหาการใช้งาน{facilityLabel} (รายวัน)
+            </h1>
             <p className="fb-subtitle">
-              กรุณากรอกข้อมูลหลังใช้งานสนามในวันนี้
+              โปรดบันทึกปัญหาและข้อเสนอแนะหลังจากเช็คอินครบสำหรับ
+              {" "}
+              {facilityLabel}
+              {" "}
+              ในวันนี้
             </p>
           </header>
 
-          <form className="fb-form" onSubmit={handleSubmit}>
+          {/* ข้อมูลพื้นฐาน */}
+          <section className="fb-basic" aria-label="ข้อมูลพื้นฐาน">
+            <div className="fb-basic-row">
+              <div>
+                <span className="fb-label">วันที่</span>
+                <div className="fb-value">{todayThai}</div>
+              </div>
+              <div>
+                <span className="fb-label">ผู้บันทึก</span>
+                <div className="fb-value">{staffName}</div>
+              </div>
+            </div>
+            <p className="fb-note">
+              * แบบประเมินนี้ใช้สำหรับเก็บข้อมูลปัญหาของ
+              {" "}
+              {facilityLabel}
+              {" "}
+              ในแต่ละวัน และช่วยปรับปรุงการให้บริการสนามกีฬา
+            </p>
+          </section>
+
+          {/* ฟอร์มหลัก */}
+          <form className="fb-form" onSubmit={onSubmit}>
             <div className="fb-field">
-              <label>ปัญหาที่พบ</label>
+              <label className="fb-label" htmlFor="problems">
+                ปัญหาที่พบในวันนี้
+              </label>
               <textarea
+                id="problems"
+                className="fb-textarea"
+                placeholder="เช่น อุปกรณ์ชำรุด, ระบบไฟสนามมีปัญหา, จองสนามซ้ำซ้อน ฯลฯ"
                 value={problems}
                 onChange={(e) => setProblems(e.target.value)}
               />
             </div>
 
             <div className="fb-field">
-              <label>รายละเอียดเพิ่มเติม</label>
+              <label className="fb-label" htmlFor="detail">
+                รายละเอียดปัญหา
+              </label>
               <textarea
+                id="detail"
+                className="fb-textarea"
+                placeholder="อธิบายว่าเกิดอะไรขึ้น ช่วงเวลาไหน สนามใด มีใครได้รับผลกระทบบ้าง"
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
               />
             </div>
 
             <div className="fb-field">
-              <label>ข้อเสนอแนะ</label>
+              <label className="fb-label" htmlFor="suggest">
+                ข้อเสนอแนะ
+              </label>
               <textarea
+                id="suggest"
+                className="fb-textarea"
+                placeholder="เสนอวิธีการแก้ไขหรือป้องกันปัญหานี้ในอนาคต"
                 value={suggest}
                 onChange={(e) => setSuggest(e.target.value)}
               />
             </div>
 
             <div className="fb-field">
-              <label>ไฟล์แนบ</label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              <label className="fb-label" htmlFor="improve">
+                สิ่งที่อยากให้ปรับปรุงเพิ่มเติม
+              </label>
+              <textarea
+                id="improve"
+                className="fb-textarea"
+                placeholder="เช่น อยากให้เพิ่มไฟส่องสว่าง, ปรับปรุงพื้นสนาม, เพิ่มเจ้าหน้าที่ช่วงเวลาเร่งด่วน ฯลฯ"
+                value={improve}
+                onChange={(e) => setImprove(e.target.value)}
               />
+            </div>
+
+            <div className="fb-field">
+              <label className="fb-label" htmlFor="file">
+                แนบไฟล์รูปถ่ายกระดาษลงทะเบียนวันนี้
+              </label>
+              <p className="fb-help">
+                อัปโหลดรูปถ่ายกระดาษลงทะเบียน หรือไฟล์สแกน (รองรับ JPG, PNG, PDF)
+              </p>
+              <div className="fb-file-box">
+                <input
+                  id="file"
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  onChange={onFileChange}
+                />
+                {file && (
+                  <div className="fb-file-name">ไฟล์ที่เลือก: {file.name}</div>
+                )}
+              </div>
             </div>
 
             {error && <p className="fb-error">{error}</p>}
             {ok && <p className="fb-ok">{ok}</p>}
 
             <div className="fb-actions">
-              <button type="submit" disabled={submitting}>
-                {submitting ? "กำลังบันทึก..." : "ส่งแบบประเมิน"}
+              <button
+                type="submit"
+                className="fb-btn-primary"
+                disabled={submitting || !canSubmit}
+              >
+                {submitting ? "กำลังบันทึก..." : "ยืนยันการส่งแบบประเมิน"}
+              </button>
+              <button
+                type="button"
+                className="fb-btn-ghost"
+                onClick={onBackToMenu}
+              >
+                กลับไปหน้าเมนูนิสิตช่วยงาน
               </button>
             </div>
           </form>
