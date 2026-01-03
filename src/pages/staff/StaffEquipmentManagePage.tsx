@@ -1,68 +1,78 @@
-// src/pages/staff/StaffEquipmentManagePage.jsx
 import React, { useEffect, useState } from "react";
 import HeaderStaff from "../../components/HeaderStaff";
 import "../../styles/staff-equipment.css";
 
-// ===== BACKEND & Helpers =====
+// ===== Config =====
+const BACKEND =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "http://localhost:8000";
 
-// ใช้ BASE_URL จาก .env (เช่น http://localhost:8000)
-const BACKEND = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
-).replace(/\/$/, "");
-
-// endpoint ฝั่ง staff
 const API_LIST = `${BACKEND}/api/staff/equipments/`;
-const API_ITEM = (id) => `${BACKEND}/api/staff/equipment/${id || 0}/`;
+const API_ITEM = (id: number) => `${BACKEND}/api/staff/equipment/${id}/`;
 
-// อ่าน csrftoken จาก cookie
-function getCsrfToken() {
-  const m = document.cookie.match(/(?:^|;)\s*csrftoken=([^;]+)/);
-  return m ? decodeURIComponent(m[1]) : "";
+// ===== Types =====
+interface EquipmentItem {
+  id: number;
+  name: string;
+  stock: number;
+  total: number;
 }
 
-const clampInt = (n) => {
-  const num = Number(n);
-  if (!Number.isFinite(num)) return 0;
-  return Math.max(0, Math.floor(num));
+interface ApiListResponse {
+  rows?: EquipmentItem[];
+  data?: EquipmentItem[];
+}
+
+interface ApiResponse {
+  ok?: boolean;
+  message?: string;
+  row?: EquipmentItem;
+}
+
+// ===== Utils =====
+const getCsrfToken = (): string => {
+  const m = document.cookie.match(/(?:^|;)\s*csrftoken=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : "";
 };
 
-const toKeyName = (s) => (s || "").trim().toLowerCase();
+const clampInt = (n: unknown): number => {
+  const num = Number(n);
+  return Number.isFinite(num) ? Math.max(0, Math.floor(num)) : 0;
+};
+
+const normalize = (s: string) => s.trim().toLowerCase();
 
 // ===== Component =====
-
 export default function StaffEquipmentManagePage() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<EquipmentItem[]>([]);
   const [equipName, setEquipName] = useState("");
   const [equipStock, setEquipStock] = useState("10");
-  const [showSheet, setShowSheet] = useState(false);
 
-  // inline name-edit state
-  const [editingNameId, setEditingNameId] = useState(null);
+  const [editingNameId, setEditingNameId] = useState<number | null>(null);
   const [editingNameValue, setEditingNameValue] = useState("");
 
-  // ชื่อเจ้าหน้าที่บน Header
   const [displayName, setDisplayName] = useState(
     localStorage.getItem("display_name") || "เจ้าหน้าที่"
   );
 
-  // set data-page สำหรับธีม staff-equipment
+  const [showSheet, setShowSheet] = useState(false);
+
+  // page theme
   useEffect(() => {
     document.body.setAttribute("data-page", "staff-equipment");
-    return () => {
-      document.body.removeAttribute("data-page");
-    };
+    return () => document.body.removeAttribute("data-page");
   }, []);
 
-  // โหลดชื่อ user (กันกรณียังไม่เคยเข้า StaffMenu)
+  // load staff profile
   useEffect(() => {
     const loadUser = async () => {
       try {
         const res = await fetch(`${BACKEND}/auth/me/`, {
           credentials: "include",
         });
-        if (!res.ok) throw new Error("not ok");
+        if (!res.ok) throw new Error();
         const data = await res.json();
-        if (data?.ok && data?.username) {
+        if (data?.username) {
           setDisplayName(data.username);
           localStorage.setItem("display_name", data.username);
         } else {
@@ -75,24 +85,14 @@ export default function StaffEquipmentManagePage() {
     loadUser();
   }, []);
 
-  // โหลดรายการอุปกรณ์จาก backend
   const fetchList = async () => {
     try {
-      const res = await fetch(API_LIST, {
-        headers: { Accept: "application/json" },
-        credentials: "include",
-      });
-      if (!res.ok) {
-        console.error("LOAD_EQUIP_FAILED", res.status, res.statusText);
-        alert("โหลดรายการไม่สำเร็จ");
-        return;
-      }
-      const data = await res.json();
-      const rows = (data && (data.rows || data.data || [])) || [];
-      setItems(rows);
-    } catch (err) {
-      console.error(err);
-      alert("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      const res = await fetch(API_LIST, { credentials: "include" });
+      if (!res.ok) throw new Error();
+      const data: ApiListResponse = await res.json();
+      setItems(data.rows || data.data || []);
+    } catch {
+      alert("โหลดรายการไม่สำเร็จ");
     }
   };
 
@@ -105,199 +105,113 @@ export default function StaffEquipmentManagePage() {
     setTimeout(() => setShowSheet(false), 1200);
   };
 
-  const findExistingByName = (name) => {
-    const key = toKeyName(name);
-    return items.find((it) => toKeyName(it.name) === key) || null;
-  };
+  const findExisting = (name: string) =>
+    items.find((i) => normalize(i.name) === normalize(name));
 
   const handleAdd = async () => {
     const name = equipName.trim();
-    if (!name) {
-      alert("กรุณากรอกชื่ออุปกรณ์");
-      return;
-    }
+    const stock = clampInt(equipStock);
 
-    const addStock = clampInt(equipStock);
-    if (addStock <= 0) {
-      alert("จำนวนสต็อกต้องมากกว่า 0");
-      return;
-    }
+    if (!name) return alert("กรุณากรอกชื่ออุปกรณ์");
+    if (stock <= 0) return alert("จำนวนต้องมากกว่า 0");
 
-    const exist = findExistingByName(name);
+    const existed = findExisting(name);
 
-    // ถ้ามีชื่อซ้ำ → PATCH เพิ่ม stock
-    if (exist) {
-      const newStock = exist.stock + addStock;
-      const newTotal = Math.max(exist.total, newStock);
-
-      try {
-        const res = await fetch(API_ITEM(exist.id), {
+    try {
+      if (existed) {
+        const newStock = existed.stock + stock;
+        const res = await fetch(API_ITEM(existed.id), {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCsrfToken(),
-            Accept: "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ stock: newStock, total: newTotal }),
+          body: JSON.stringify({
+            stock: newStock,
+            total: Math.max(newStock, existed.total),
+          }),
         });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.ok === false) {
-          alert(data.message || "อัปเดตสต็อกไม่สำเร็จ");
-          return;
-        }
-        openSheet();
-        fetchList();
-      } catch (e) {
-        console.error(e);
-        alert("อัปเดตสต็อกไม่สำเร็จ");
-      }
-    } else {
-      // POST สร้างใหม่ total = stock เริ่มต้น
-      const stock = addStock;
-      const total = stock;
 
-      try {
+        const data: ApiResponse = await res.json();
+        if (!res.ok || data.ok === false) throw new Error();
+      } else {
         const res = await fetch(API_ITEM(0), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCsrfToken(),
-            Accept: "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ name, stock, total }),
+          body: JSON.stringify({
+            name,
+            stock,
+            total: stock,
+          }),
         });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.ok === false) {
-          alert(data.message || "เพิ่มรายการไม่สำเร็จ");
-          return;
-        }
-        openSheet();
-        fetchList();
-      } catch (e) {
-        console.error(e);
-        alert("เพิ่มรายการไม่สำเร็จ");
-      }
-    }
 
-    // clear form
-    setEquipName("");
-    setEquipStock("10");
+        const data: ApiResponse = await res.json();
+        if (!res.ok || data.ok === false) throw new Error();
+      }
+
+      setEquipName("");
+      setEquipStock("10");
+      openSheet();
+      fetchList();
+    } catch {
+      alert("บันทึกไม่สำเร็จ");
+    }
   };
 
-  const handleSaveRow = async (row) => {
-    const stock = clampInt(row.stock);
-    const curTotal = clampInt(row.total);
-    const body = {
-      name: (row.name || "").trim(),
-      stock,
-    };
-    if (stock > curTotal) {
-      body.total = stock;
-    }
-
+  const updateRow = async (row: EquipmentItem) => {
     try {
       const res = await fetch(API_ITEM(row.id), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": getCsrfToken(),
-          Accept: "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          name: row.name,
+          stock: row.stock,
+          total: Math.max(row.total, row.stock),
+        }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.ok === false) {
-        alert(data.message || "บันทึกไม่สำเร็จ");
-        return;
-      }
 
-      const updated = data.row || body;
+      const data: ApiResponse = await res.json();
+      if (!res.ok || data.ok === false) throw new Error();
 
-      setItems((prev) =>
-        prev.map((it) =>
-          it.id === row.id
-            ? {
-                ...it,
-                name: updated.name ?? row.name,
-                stock: updated.stock ?? stock,
-                total: updated.total ?? body.total ?? curTotal,
-              }
-            : it
-        )
-      );
-
-      setEditingNameId(null);
-      setEditingNameValue("");
       openSheet();
-    } catch (e) {
-      console.error(e);
+    } catch {
       alert("บันทึกไม่สำเร็จ");
     }
   };
 
-  const handleDeleteRow = async (row) => {
-    if (!window.confirm("ต้องการลบรายการนี้หรือไม่?")) return;
+  const deleteRow = async (row: EquipmentItem) => {
+    if (!confirm("ต้องการลบรายการนี้หรือไม่?")) return;
 
     try {
       const res = await fetch(API_ITEM(row.id), {
         method: "DELETE",
-        headers: {
-          "X-CSRFToken": getCsrfToken(),
-          Accept: "application/json",
-        },
+        headers: { "X-CSRFToken": getCsrfToken() },
         credentials: "include",
       });
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        /* ignore */
-      }
-      if (!res.ok || data.ok === false) {
-        alert(data.message || "ลบไม่สำเร็จ");
-        return;
-      }
-      setItems((prev) => prev.filter((it) => it.id !== row.id));
+
+      if (!res.ok) throw new Error();
+      setItems((prev) => prev.filter((i) => i.id !== row.id));
       openSheet();
-    } catch (e) {
-      console.error(e);
+    } catch {
       alert("ลบไม่สำเร็จ");
     }
   };
 
-  const startEditName = (row) => {
-    setEditingNameId(row.id);
-    setEditingNameValue(row.name);
-  };
-
-  const cancelEditName = () => {
-    setEditingNameId(null);
-    setEditingNameValue("");
-  };
-
-  const updateRowLocalStock = (id, stock) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, stock } : it))
-    );
-  };
-
-  const updateRowLocalName = (id, name) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, name } : it))
-    );
-  };
-
   return (
     <div data-page="staff-equipment">
-      {/* ส่ง displayName + BACKEND เข้า HeaderStaff ให้หน้าตาเหมือนหน้า staff อื่น */}
       <HeaderStaff displayName={displayName} BACKEND={BACKEND} />
 
-      <main className="wrap narrower staff-equipment-wrap">
-        {/* secondary tabs */}
-        <nav className="mainmenu" aria-label="เมนูรอง">
+      <main className="wrap staff-equipment-wrap">
+        <nav className="mainmenu">
           <ul>
             <li>
               <a className="tab active" href="/staff_equipment">
@@ -314,162 +228,109 @@ export default function StaffEquipmentManagePage() {
 
         <h1 className="page-title">เพิ่มและจัดการอุปกรณ์กีฬา</h1>
 
-        {/* add row */}
+        {/* Add */}
         <div className="add-row">
           <input
-            id="equipName"
-            type="text"
-            className="input name-input"
-            placeholder="เพิ่มรายการ (เช่น ลูกบอล, ไม้แบด, ฯลฯ)"
+            className="input"
+            placeholder="ชื่ออุปกรณ์"
             value={equipName}
             onChange={(e) => setEquipName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAdd();
-            }}
           />
           <input
-            id="equipStock"
+            className="input"
             type="number"
             min={0}
-            className="input stock-input"
-            placeholder="สต็อกเริ่มต้น"
             value={equipStock}
             onChange={(e) => setEquipStock(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAdd();
-            }}
           />
-          <button id="btnAdd" className="btn primary" onClick={handleAdd}>
-            <span className="icon">＋</span>
+          <button className="btn primary" onClick={handleAdd}>
             เพิ่ม
           </button>
         </div>
 
-        {/* list */}
-        <section className="panel equip-panel">
-          <header className="table-head">
-            <div>อุปกรณ์กีฬา</div>
-            <div>คงเหลือ</div>
-            <div className="actions-col">จัดการ</div>
-          </header>
+        {/* List */}
+        <section className="panel">
+          {items.length === 0 && (
+            <div className="empty">ยังไม่มีรายการอุปกรณ์</div>
+          )}
 
-          <ul id="equipList" className="list">
-            {items.length === 0 && (
-              <li className="empty">ยังไม่มีรายการอุปกรณ์</li>
-            )}
+          {items.map((row) => (
+            <div key={row.id} className="row">
+              <div className="name">
+                {editingNameId === row.id ? (
+                  <input
+                    value={editingNameValue}
+                    onChange={(e) => setEditingNameValue(e.target.value)}
+                    onBlur={() => {
+                      setEditingNameId(null);
+                      updateRow({ ...row, name: editingNameValue });
+                    }}
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    onDoubleClick={() => {
+                      setEditingNameId(row.id);
+                      setEditingNameValue(row.name);
+                    }}
+                  >
+                    {row.name}
+                  </span>
+                )}
+              </div>
 
-            {items.map((row) => {
-              const isEditing = editingNameId === row.id;
-              return (
-                <li key={row.id} className="row">
-                  {/* name */}
-                  <div className="name-wrap">
-                    {!isEditing && (
-                      <span
-                        className="name"
-                        title="ดับเบิลคลิกเพื่อแก้ชื่อ"
-                        onDoubleClick={() => startEditName(row)}
-                      >
-                        {row.name}
-                      </span>
-                    )}
-                    {isEditing && (
-                      <input
-                        className="name-edit"
-                        type="text"
-                        value={editingNameValue}
-                        onChange={(e) => {
-                          setEditingNameValue(e.target.value);
-                          updateRowLocalName(row.id, e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleSaveRow({
-                              ...row,
-                              name: editingNameValue,
-                            });
-                          } else if (e.key === "Escape") {
-                            cancelEditName();
-                          }
-                        }}
-                        onBlur={cancelEditName}
-                        autoFocus
-                      />
-                    )}
-                  </div>
+              <div className="stock">
+                <button
+                  onClick={() =>
+                    setItems((prev) =>
+                      prev.map((i) =>
+                        i.id === row.id
+                          ? { ...i, stock: Math.max(0, i.stock - 1) }
+                          : i
+                      )
+                    )
+                  }
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  value={row.stock}
+                  onChange={(e) =>
+                    setItems((prev) =>
+                      prev.map((i) =>
+                        i.id === row.id
+                          ? { ...i, stock: clampInt(e.target.value) }
+                          : i
+                      )
+                    )
+                  }
+                />
+                <button
+                  onClick={() =>
+                    setItems((prev) =>
+                      prev.map((i) =>
+                        i.id === row.id
+                          ? { ...i, stock: i.stock + 1 }
+                          : i
+                      )
+                    )
+                  }
+                >
+                  +
+                </button>
+              </div>
 
-                  {/* stock stepper */}
-                  <div className="inline-edit">
-                    <button
-                      className="icon-btn steper dec"
-                      type="button"
-                      title="ลดลง"
-                      onClick={() =>
-                        updateRowLocalStock(row.id, Math.max(0, row.stock - 1))
-                      }
-                    >
-                      −
-                    </button>
-                    <input
-                      className="stock"
-                      type="number"
-                      min={0}
-                      value={row.stock}
-                      onChange={(e) =>
-                        updateRowLocalStock(row.id, clampInt(e.target.value))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleSaveRow(row);
-                        } else if (e.key === "Escape") {
-                          e.target.blur();
-                        }
-                      }}
-                    />
-                    <button
-                      className="icon-btn steper inc"
-                      type="button"
-                      title="เพิ่มขึ้น"
-                      onClick={() =>
-                        updateRowLocalStock(row.id, row.stock + 1)
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* actions */}
-                  <div className="actions">
-                    <button
-                      className="icon-btn save"
-                      type="button"
-                      title="บันทึก"
-                      onClick={() => handleSaveRow(row)}
-                    >
-                      💾
-                    </button>
-                    <button
-                      className="icon-btn danger del"
-                      type="button"
-                      title="ลบ"
-                      onClick={() => handleDeleteRow(row)}
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+              <div className="actions">
+                <button onClick={() => updateRow(row)}>💾</button>
+                <button onClick={() => deleteRow(row)}>🗑️</button>
+              </div>
+            </div>
+          ))}
         </section>
       </main>
 
-      {/* toast / sheet */}
-      <div
-        id="sheetOk"
-        className="sheet"
-        aria-hidden={showSheet ? "false" : "true"}
-      >
+      <div className={`sheet ${showSheet ? "show" : ""}`}>
         <div className="sheet-card">
           <div className="sheet-title">ดำเนินการสำเร็จ</div>
           <div className="sheet-icon">✔</div>
