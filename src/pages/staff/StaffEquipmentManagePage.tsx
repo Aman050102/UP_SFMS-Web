@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HeaderStaff from "../../components/HeaderStaff";
+import HeaderStaff from "../../components/header/HeaderBase";
 import "../../styles/staff-equipment.css";
 
 // ===== Config =====

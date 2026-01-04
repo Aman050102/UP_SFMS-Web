@@ -1,4 +1,5 @@
-// src/pages/CheckinFeedback.tsx
+
+// src/pages/CheckinFeedback.jsx
 import React, { useEffect, useState } from "react";
 import HeaderUser from "../../components/HeaderUser";
 import "../../styles/checkin_feedback.css";

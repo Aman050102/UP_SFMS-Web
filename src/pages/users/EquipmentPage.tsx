@@ -1,8 +1,16 @@
 // src/pages/users/EquipmentPage.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import HeaderUser from "../../components/HeaderUser";
+import UserLayout from "../../components/layout/UserLayout";
 import "../../styles/equipment.css";
 
+/* ===== helper ===== */
+function getCookie(name: string) {
+  const v = `; ${document.cookie}`;
+  const p = v.split(`; ${name}=`);
+  return p.length === 2 ? p.pop()!.split(";").shift()! : null;
+}
+
+export default function EquipmentPage() {
 function getCookie(name) {
   const v = `; ${document.cookie}`;
   const p = v.split(`; ${name}=`);

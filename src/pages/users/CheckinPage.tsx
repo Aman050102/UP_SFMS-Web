@@ -1,4 +1,5 @@
-// src/pages/CheckinPage.tsx
+
+// src/pages/CheckinPage.jsx
 import React, { useEffect, useState } from "react";
 import HeaderUser from "../../components/HeaderUser";
 import "../../styles/checkin.css";
