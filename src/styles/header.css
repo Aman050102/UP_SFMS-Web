@@ -1,75 +1,135 @@
-/* ===== App Header ===== */
-.app-header {
+/* header.css */
+:root {
+  --primary-purple: #5f5aa2;
+  --dark-purple: #4a4589;
+  --white: #ffffff;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.topbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
-
-  height: 64px;
-  background: #6b66a5; /* ม่วงแบบในรูป */
-  color: #ffffff;
-
+  width: 100%;
+  height: 70px;
+  background-color: var(--primary-purple);
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 0 20px;
+  z-index: 1000;
+  box-sizing: border-box;
+  color: var(--white);
 }
 
-/* ===== Left: Logo + Title ===== */
-.header-left {
+.brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.header-logo {
-  height: 42px;
+.brand-logo {
+  height: 45px;
   width: auto;
 }
 
-.header-title {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-
-.header-title strong {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.header-title span {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-/* ===== Right: Hamburger ===== */
-.header-menu-btn {
-  background: #f0f0f0;
-  color: #555;
-
-  border: none;
-  border-radius: 6px;
-
-  font-size: 24px;
-  line-height: 1;
-
-  padding: 6px 10px;
-  cursor: pointer;
-
+.nav-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 15px;
 }
 
-.header-menu-btn:hover {
-  background: #e0e0e0;
+/* Menu for Desktop */
+.mainmenu ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
 }
 
-/* ===== Desktop behavior ===== */
-@media (min-width: 1024px) {
-  .header-menu-btn {
-    display: none; /* desktop ไม่ต้องมี ☰ */
+.toplink {
+  color: var(--white);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.toplink:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* User Profile & Logout */
+.righttools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-display {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+  .topbar {
+    height: 60px;
+    padding: 0 10px;
   }
+
+  .mainmenu {
+    display: none; /* ซ่อนเมนูหลักในมือถือ แล้วไปใช้ Hamburger แทนได้ */
+  }
+
+  .brand-logo {
+    height: 35px;
+  }
+
+  .user-display span {
+    display: none; /* ซ่อนชื่อในมือถือ เหลือแค่ไอคอน */
+  }
+}
+/* จัดการให้เนื้อหาอยู่ต่อจาก Header ที่เป็น sticky */
+.main-content {
+  display: block;
+  width: 100%;
+  min-height: calc(100vh - 92px); /* หักลบความสูง Header ออก */
+  padding: 20px; /* ระยะห่างเนื้อหากับขอบ */
+  box-sizing: border-box;
+  background-color: #f0f0f0; /* สีเทาตามรูปตัวอย่าง */
+}
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-area {
+  flex: 1;
+  background-color: #f0f0f0; /* พื้นหลังเทาอ่อนตามตัวอย่าง */
+  padding: 0; /* หรือใส่ padding ตามต้องการ */
+  overflow-y: auto;
+}
+
+/* ล็อกความสูง Header ให้คงที่เพื่อให้เนื้อหาต่อท้ายพอดี */
+header.topbar {
+  flex-shrink: 0;
 }
