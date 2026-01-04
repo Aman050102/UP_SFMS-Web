@@ -14,7 +14,7 @@ export default function HeaderStaff({ displayName, BACKEND }: any) {
           </svg>
         </button>
         <img
-          src="/img/logoDSASMART.png"
+          src="/img/dsa.png"
           alt="Staff Logo"
           className="brand-logo"
           onClick={() => navigate("/staff/menu")}

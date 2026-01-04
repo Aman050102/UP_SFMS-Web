@@ -14,7 +14,7 @@ export default function HeaderUser({ displayName, BACKEND }: any) {
           </svg>
         </button>
         <img
-          src="/img/logoDSASMART.png"
+          src="/img/dsa.png"
           alt="Logo"
           className="brand-logo"
           onClick={() => navigate("/user/menu")}
