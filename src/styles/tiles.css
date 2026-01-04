@@ -1,0 +1,51 @@
+/* src/styles/tiles.css */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 คอลัมน์แบบรูปตัวอย่าง */
+  gap: 25px;
+  width: 100%;
+  max-width: 800px; /* จำกัดความกว้างให้เหมือนในรูป */
+}
+
+.tile {
+  background: var(--white);
+  border-radius: 20px; /* ขอบมนสวยงาม */
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* เงาฟุ้งๆ */
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.tile:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(95, 90, 162, 0.15);
+}
+
+.tile svg {
+  width: 70px;
+  height: 70px;
+  color: var(--primary-purple);
+  margin-bottom: 20px;
+}
+
+.tile b {
+  font-size: 22px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.tile small {
+  color: #888;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr; /* มือถือเหลือ 1 คอลัมน์ */
+  }
+}

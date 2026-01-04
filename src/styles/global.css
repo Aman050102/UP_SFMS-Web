@@ -1,29 +1,42 @@
+/* src/styles/global.css */
 :root {
-  --brand: #5f5aa2;
-  --bg: #f6f3ff;
-  --card: #fff;
-  --text: #1b1a21;
-  --muted: #6b657a;
-  --divider: #e7e4f5;
-  --shadow: 0 16px 40px rgba(40, 22, 90, 0.12);
+  --primary-purple: #5f5aa2;
+  --bg-gray: #f0f0f0;
+  --white: #ffffff;
+  --header-height: 70px;
 }
+
 body {
   margin: 0;
-  font-family:
-    ui-sans-serif, system-ui, "Noto Sans Thai", Roboto, Arial, sans-serif;
-  color: var(--text);
-  background: linear-gradient(180deg, var(--brand) 0 92px, var(--bg) 92px 100%);
+  padding: 0;
+  font-family: 'Kanit', sans-serif;
+  background-color: var(--bg-gray);
 }
-main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  gap: 24px;
+
+/* โครงสร้างหลักแบบ YouTube Style */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+/* เนื้อหาหลัก: สำคัญมาก! ต้องมี margin-top เท่ากับความสูง Header */
+.content-area {
+  flex: 1;
+  margin-top: var(--header-height);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* จัดเนื้อหาให้อยู่กลางจอแบบรูป 13.03.44 */
+}
+
+/* จัดระเบียบส่วนหัวข้อเมนู */
 .section-title {
   font-size: 20px;
-  font-weight: 900;
-  margin: 6px 4px 2px;
-  color: #2a2640;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
 }

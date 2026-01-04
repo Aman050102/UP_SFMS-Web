@@ -1,28 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import HeaderUser from "./HeaderUser"; // ไฟล์ Header ที่สร้างไว้
-import HeaderStaff from "./HeaderStaff"; // ไฟล์ Header ที่สร้างไว้
+import HeaderBase from "./HeaderBase";
+import SidebarUser from "./SidebarUser"; // ลบ /sidebar/ ออก
+import SidebarStaff from "./SidebarStaff"; // ลบ /sidebar/ ออกและใช้ชื่อไฟล์ให้ตรง
 
-interface Props {
-  role: "user" | "staff";
-}
+export default function MainLayout({ role }: { role: "user" | "staff" }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const displayName = localStorage.getItem("display_name") || "ผู้ใช้งาน";
+  const BACKEND = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
 
-export default function MainLayout({ role }: Props) {
-  // ดึงข้อมูลจาก Context หรือ LocalStorage (ตัวอย่าง)
-  const displayName = "นายบัสซาม แฮมา";
-  const BACKEND = "https://dsa.up.ac.th";
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <div className="app-layout">
-      {/* เลือก Header ตาม Role */}
+      {/* Header สไตล์ YouTube */}
+      <HeaderBase
+        onToggleMenu={toggleMenu}
+        displayName={displayName}
+        BACKEND={BACKEND}
+      />
+
+      {/* Sidebar เมนูด้านซ้าย */}
       {role === "staff" ? (
-        <HeaderStaff displayName={displayName} BACKEND={BACKEND} />
+        <SidebarStaff open={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       ) : (
-        <HeaderUser displayName={displayName} BACKEND={BACKEND} />
+        <SidebarUser open={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       )}
 
-      {/* ส่วนเนื้อหาจากแต่ละ Page จะมาโผล่ตรง Outlet นี้ */}
-      <main className="content-area">
+      {/* ส่วนเนื้อหาหลัก */}
+      <main className="content-area" style={{ paddingTop: "70px", minHeight: "100vh", background: "#f0f0f0" }}>
         <Outlet />
       </main>
     </div>
