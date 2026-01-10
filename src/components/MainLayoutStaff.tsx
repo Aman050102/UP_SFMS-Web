@@ -1,55 +1,40 @@
+// components/MainLayout.tsx
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import HeaderStaff from "./HeaderStaff";
+import HeaderUser from "./HeaderUser";
 import SidebarStaff from "./SidebarStaff";
+import SidebarUser from "./SidebarUser";
 
-export default function MainLayoutStaff() {
+export default function MainLayout({ role }: { role: "user" | "staff" }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const displayName = localStorage.getItem("display_name") || "เจ้าหน้าที่";
-  const BACKEND = (import.meta.env.VITE_API_BASE_URL || "https://up-fms-api-hono.aman02012548.workers.dev").replace(/\/$/, "");
-
+  const displayName = localStorage.getItem("display_name") || "ผู้ใช้งาน";
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <div className="app-layout" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* 1. Header อยู่บนสุดเพียงที่เดียว */}
-      <HeaderStaff
-        onToggleMenu={toggleMenu}
-        displayName={displayName}
-        BACKEND={BACKEND}
-      />
+      {/* เลือก Header ตาม Role */}
+      {role === "staff" ? (
+        <HeaderStaff onToggleMenu={toggleMenu} displayName={displayName} />
+      ) : (
+        <HeaderUser onToggleMenu={toggleMenu} displayName={displayName} />
+      )}
 
       <div style={{ display: "flex", flex: 1, position: "relative" }}>
-        {/* 2. Sidebar เมนูอยู่ด้านซ้ายเสมอ */}
-        <SidebarStaff
-          open={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-        />
+        {/* เลือก Sidebar ตาม Role (ทั้งคู่จะเลื่อนจากด้านซ้ายเหมือนกันตาม CSS) */}
+        {role === "staff" ? (
+          <SidebarStaff open={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        ) : (
+          <SidebarUser open={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        )}
 
-        {/* 3. ส่วนเนื้อหาหลักที่จะเปลี่ยนไปตามหน้าที่เลือก (Outlet) */}
-        <main
-          className="content-area"
-          style={{
-            flex: 1,
-            paddingTop: "80px", // เว้นระยะให้ Header
-            background: "#f8fafc",
-            transition: "all 0.3s ease",
-            minHeight: "100vh"
-          }}
-        >
+        <main className="content-area" style={{ flex: 1, paddingTop: "75px", background: "#f8fafc" }}>
           <Outlet />
         </main>
       </div>
 
-      {/* Overlay เมื่อเปิดเมนูในมือถือ */}
       {isMenuOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setIsMenuOpen(false)}
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 998
-          }}
-        />
+        <div className="sidebar-overlay" onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 1001 }} />
       )}
     </div>
   );

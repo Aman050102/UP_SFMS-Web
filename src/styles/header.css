@@ -578,3 +578,418 @@
   font-weight: 600;
   cursor: pointer;
 }
+/* การแจ้งเตือนแบบมินิมอล */
+.notify-panel-minimal {
+  width: 320px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+
+.dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-header .title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.dropdown-header .badge-count {
+  font-size: 0.75rem;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #64748b;
+}
+
+.notify-item {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f8fafc;
+  transition: background 0.2s;
+}
+
+.notify-item:hover {
+  background: #f8fafc;
+}
+
+.item-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.user-initial {
+  width: 36px;
+  height: 36px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0;
+  color: #1e293b;
+}
+
+.user-meta {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-approve-sm, .btn-reject-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.btn-approve-sm { background: #f0fdf4; color: #16a34a; }
+.btn-approve-sm:hover { background: #22c55e; color: white; }
+
+.btn-reject-sm { background: #fef2f2; color: #dc2626; }
+.btn-reject-sm:hover { background: #ef4444; color: white; }
+
+/* โปรไฟล์แบบใหม่ */
+.profile-panel-minimal {
+  width: 260px;
+  padding: 8px;
+}
+
+.user-summary {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.avatar-box {
+  width: 44px;
+  height: 44px;
+  background: #6366f1;
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.menu-group {
+  padding: 8px 0;
+}
+
+.group-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  padding: 0 12px 8px;
+  margin: 0;
+}
+
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 12px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #475569;
+  transition: 0.2s;
+}
+
+.menu-item:hover {
+  background: #f1f5f9;
+}
+
+.menu-item.active {
+  background: #f1f5f9;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box.blue { background: #eff6ff; color: #3b82f6; }
+.icon-box.purple { background: #f5f3ff; color: #8b5cf6; }
+.icon-box.gray { background: #f8fafc; color: #64748b; }
+.icon-box.red { background: #fff1f2; color: #e11d48; }
+
+.menu-item .arrow {
+  margin-left: auto;
+  opacity: 0.5;
+}
+/* เพิ่มเติมจาก CSS เดิมของคุณ */
+
+/* วงกลมแสดงตัวเลขการแจ้งเตือน */
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444; /* สีแดงสว่าง */
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ปุ่มวงกลมโปรไฟล์ */
+.profile-circle-trigger {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.avatar-main {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #5f5aa2; /* สีม่วงตามธีม */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #e2e8f0;
+  transition: transform 0.2s;
+}
+
+.avatar-main.user-color {
+  background: #64748b; /* สีเทาเข้มสำหรับนิสิตทั่วไป */
+}
+
+.avatar-main:hover {
+  transform: scale(1.05);
+}
+
+/* ปรับปรุงแผงแจ้งเตือนมินิมอล */
+.notify-panel-minimal {
+  width: 300px;
+  top: 55px;
+  padding: 0;
+}
+
+.notify-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-initial {
+  width: 32px;
+  height: 32px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #5f5aa2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* เส้นคั่นในเมนู */
+.divider {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 8px 0;
+}
+/* การแจ้งเตือนแบบแยก Tab */
+.notify-header-tabs {
+  display: flex;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
+}
+
+.notify-header-tabs button {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  cursor: pointer;
+  position: relative;
+}
+
+.notify-header-tabs button.active {
+  color: #5f5aa2;
+}
+
+.notify-header-tabs button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #5f5aa2;
+}
+
+.avatar-squircle-gradient {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #5f5aa2, #8b85d1);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.action-card-sm {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-approve-fill {
+  background: #5f5aa2;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-reject-ghost {
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.avatar-main.user-theme {
+  background: #475569; /* สีโทนเข้มสำหรับนิสิตเพื่อให้ต่างจากแอดมิน */
+}
+/* Tab การแจ้งเตือน */
+.notify-header-tabs {
+  display: flex;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 15px;
+}
+
+.notify-header-tabs button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px 0;
+  position: relative;
+}
+
+.notify-header-tabs button.active {
+  color: #5f5aa2;
+}
+
+.notify-header-tabs button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #5f5aa2;
+}
+
+/* Squircle และ Avatar */
+.avatar-squircle-gradient {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #5f5aa2, #8b85d1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.avatar-main.user-theme {
+  background: #475569; /* สีเทาเข้มสำหรับนิสิต */
+}
+
+/* Badge แจ้งเตือน */
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -25,29 +25,36 @@ export default function StaffEquipmentManagePage() {
   useEffect(() => { fetchList(); }, []);
 
   const handleSave = async () => {
-    if (!equipName) return alert("กรุณาระบุชื่ออุปกรณ์");
-    setLoading(true);
-    try {
-      const method = editingId ? "PATCH" : "POST";
-      const url = editingId ? `${API}/api/staff/equipment/${editingId}/` : `${API}/api/staff/equipment/0/`;
+  if (!equipName) return alert("กรุณาระบุชื่ออุปกรณ์");
+  setLoading(true);
+  try {
+    const method = editingId ? "PATCH" : "POST";
+    // ปรับ URL ให้ตรงกับ Backend API (ตัด /0/ ออกสำหรับ POST)
+    const url = editingId
+      ? `${API}/api/staff/equipment/${editingId}/`
+      : `${API}/api/staff/equipment/`;
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: equipName,
-          stock: parseInt(equipStock),
-          total: parseInt(equipStock)
-        })
-      });
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: equipName,
+        stock: parseInt(equipStock),
+        total: parseInt(equipStock)
+      })
+    });
 
-      if (res.ok) {
-        setEquipName(""); setEquipStock("10"); setEditingId(null);
-        fetchList();
-      }
-    } finally { setLoading(false); }
-  };
-
+    if (res.ok) {
+      setEquipName(""); setEquipStock("10"); setEditingId(null);
+      fetchList(); // โหลดรายการใหม่
+    } else {
+      const data = await res.json();
+      alert(data.error || "บันทึกไม่สำเร็จ");
+    }
+  } catch (e) {
+    alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+  } finally { setLoading(false); }
+};
   const deleteItem = async (id: number) => {
     if (!confirm("ยืนยันการลบอุปกรณ์นี้?")) return;
     await fetch(`${API}/api/staff/equipment/${id}/`, { method: "DELETE" });

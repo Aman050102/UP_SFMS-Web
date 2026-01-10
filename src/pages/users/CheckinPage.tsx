@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { ArrowLeft, CheckCircle2, Users, UserRound } from "lucide-react";
 import "../../styles/checkin.css";
 
 const TOP = [
-  { k: "outdoor", name: "สนามกลางแจ้ง", isOutdoor: true },
-  { k: "badminton", name: "สนามแบดมินตัน" },
-  { k: "track", name: "สนามลู่-ลาน" },
-  { k: "pool", name: "สระว่ายน้ำ" },
+  { k: "outdoor", name: "สนามกลางแจ้ง", icon: "🏸" },
+  { k: "badminton", name: "สนามแบดมินตัน", icon: "🏸" },
+  { k: "track", name: "สนามลู่-ลาน", icon: "🏃" },
+  { k: "pool", name: "สระว่ายน้ำ", icon: "🏊" },
 ];
 
 const OUTDOOR_SUBS = [
@@ -15,10 +16,7 @@ const OUTDOOR_SUBS = [
   { k: "football", name: "ฟุตบอล" },
   { k: "volleyball", name: "วอลเลย์บอล" },
   { k: "sepak_takraw", name: "เซปักตะกร้อ" },
-  { k: "badminton", name: "แบดมินตัน" },
 ];
-
-const OUTDOOR_KEYS = OUTDOOR_SUBS.map(s => `outdoor:${s.k}`);
 
 const FACILITY_LABELS = {
   outdoor: "สนามกลางแจ้ง",
@@ -27,63 +25,46 @@ const FACILITY_LABELS = {
   pool: "สระว่ายน้ำ",
 };
 
-const FACILITY_KEYS = ["outdoor", "badminton", "track", "pool"];
-
-function getCookie(name) {
-  const v = `; ${document.cookie}`;
-  const p = v.split(`; ${name}=`);
-  return p.length === 2 ? p.pop().split(";").shift() : null;
-}
-
 export default function CheckinPage() {
-  const BACKEND = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+  const BACKEND = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8787").replace(/\/$/, "");
   const [currentFacility, setCurrentFacility] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
   const [students, setStudents] = useState("");
   const [staff, setStaff] = useState("");
   const [error, setError] = useState("");
   const [doneMap, setDoneMap] = useState({});
-  const [facilityDone, setFacilityDone] = useState({});
-  const [facilityFeedback, setFacilityFeedback] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+  const isoDate = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("checkin_progress");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.date === todayStr) setDoneMap(parsed.done || {});
-      }
-      const rawDone = localStorage.getItem("checkin_facility_done");
-      if (rawDone) {
-        const parsed = JSON.parse(rawDone);
-        if (parsed.date === todayStr) setFacilityDone(parsed.facilities || {});
-      }
-      const rawFb = localStorage.getItem("checkin_facility_feedback");
-      if (rawFb) {
-        const parsed = JSON.parse(rawFb);
-        if (parsed.date === todayStr) setFacilityFeedback(parsed.facilities || {});
-      }
-    } catch (e) { console.error(e); }
-  }, [todayStr]);
+    const raw = localStorage.getItem("checkin_progress");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.date === isoDate) setDoneMap(parsed.done || {});
+    }
+  }, [isoDate]);
 
   async function doCheckin() {
-    let key = currentFacility === "outdoor" ? `outdoor:${selectedSub?.k}` : currentFacility;
-    if (doneMap[key]) { setError("วันนี้บันทึกไปแล้ว"); return; }
+    if (!students && !staff) { setError("กรุณาระบุจำนวนผู้เข้าใช้"); return; }
 
+    const key = currentFacility === "outdoor" ? `outdoor:${selectedSub?.k}` : currentFacility;
+    if (doneMap[key]) { setError("วันนี้บันทึกสนามนี้ไปแล้ว"); return; }
+
+    setIsSubmitting(true);
     const body = {
       facility: currentFacility,
-      outdoor_sub: currentFacility === "outdoor" ? selectedSub?.k : "",
-      count: Number(students) + Number(staff),
-      note: "",
+      sub_facility: currentFacility === "outdoor" ? selectedSub?.name : "",
+      students: Number(students) || 0,
+      staff: Number(staff) || 0,
+      action: 'in'
     };
 
     try {
       const res = await fetch(`${BACKEND}/api/checkin/event/`, {
         method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") || "" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
@@ -91,57 +72,103 @@ export default function CheckinPage() {
 
       const nextDone = { ...doneMap, [key]: true };
       setDoneMap(nextDone);
-      localStorage.setItem("checkin_progress", JSON.stringify({ date: todayStr, done: nextDone }));
+      localStorage.setItem("checkin_progress", JSON.stringify({ date: isoDate, done: nextDone }));
 
-      const ov = document.getElementById("overlay");
-      ov?.classList.add("show");
-      setTimeout(() => {
-        ov?.classList.remove("show");
-        window.location.reload();
-      }, 800);
-    } catch (e) { setError(e.message); }
+      document.getElementById("overlay")?.classList.add("show");
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (e: any) {
+        setError(e.message);
+        setIsSubmitting(false);
+    }
   }
-
-  const facilitiesNeedFeedback = FACILITY_KEYS.filter(fac => facilityDone[fac] && !facilityFeedback[fac]);
 
   return (
     <div className="wrap" data-page="checkin">
       <main>
-        {facilitiesNeedFeedback.length > 0 && (
-          <div className="feedback-alert">
-            <span>เช็คอิน {FACILITY_LABELS[facilitiesNeedFeedback[0]]} ครบแล้ว กรุณาทำแบบประเมิน</span>
-            <button onClick={() => window.location.href = `/checkin_feedback?facility=${facilitiesNeedFeedback[0]}`}>ไปทำแบบประเมิน</button>
-          </div>
-        )}
-
+        <div className="header-section">
+            <h1 className="main-title">บันทึกการใช้สนาม</h1>
+            <div className="date-badge">{todayStr}</div>
+        </div>
+        
         {!currentFacility ? (
           <section className="card">
-            <h3>เลือกประเภทสนาม</h3>
+            <h3 className="section-label">เลือกประเภทสนาม</h3>
             <div className="grid-top">
               {TOP.map(f => (
-                <button key={f.k} className="btn" onClick={() => setCurrentFacility(f.k)}>{f.name}</button>
+                <button key={f.k} className="facility-btn" onClick={() => setCurrentFacility(f.k)}>
+                  <span className="icon">{f.icon}</span>
+                  <span className="name">{f.name}</span>
+                </button>
               ))}
             </div>
           </section>
         ) : (
-          <section className="card">
-            <button className="btn" onClick={() => setCurrentFacility(null)}>&larr; กลับ</button>
-            <div className="form-card">
-              <div className="row">
-                <label>จำนวนนิสิต</label>
-                <input className="input-lg" type="number" value={students} onChange={e => setStudents(e.target.value)} />
+          <section className="card active-card">
+            <button
+  type="button"
+  className="back-btn"
+  onClick={() => {
+    setCurrentFacility(null);
+    setSelectedSub(null);
+    setError("");
+  }}
+>
+  <ArrowLeft size={18} strokeWidth={2.5} />
+  <span>กลับไปหน้าเลือกสนาม</span>
+</button>
+
+            {currentFacility === "outdoor" && !selectedSub ? (
+              <div className="sub-facility-section">
+                <h3 className="section-label">ระบุสนามกลางแจ้งย่อย</h3>
+                <div className="grid-outdoor">
+                  {OUTDOOR_SUBS.map(s => (
+                    <button key={s.k}
+                        className={`sport-btn ${doneMap[`outdoor:${s.k}`] ? 'is-done' : ''}`}
+                        onClick={() => setSelectedSub(s)}
+                        disabled={doneMap[`outdoor:${s.k}`]}>
+                      {s.name} {doneMap[`outdoor:${s.k}`] && <span className="done-check">✔</span>}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="row">
-                <label>จำนวนบุคลากร</label>
-                <input className="input-lg" type="number" value={staff} onChange={e => setStaff(e.target.value)} />
+            ) : (
+              <div className="checkin-form">
+                <div className="form-header">
+                  <h2 className="facility-name">
+                    {FACILITY_LABELS[currentFacility as keyof typeof FACILITY_LABELS]}
+                    {selectedSub && <span className="sub-name"> / {selectedSub.name}</span>}
+                  </h2>
+                </div>
+
+                <div className="form-inputs">
+                  <div className="input-group">
+                    <label><UserRound size={16} /> จำนวนนิสิต (คน)</label>
+                    <input className="input-lg" type="number" placeholder="0" value={students} onChange={e => setStudents(e.target.value)} />
+                  </div>
+                  <div className="input-group">
+                    <label><Users size={16} /> จำนวนบุคลากร (คน)</label>
+                    <input className="input-lg" type="number" placeholder="0" value={staff} onChange={e => setStaff(e.target.value)} />
+                  </div>
+                </div>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <button className="btn-submit" onClick={doCheckin} disabled={isSubmitting}>
+                  {isSubmitting ? "กำลังบันทึก..." : "ยืนยันการบันทึก"}
+                </button>
               </div>
-            </div>
-            <button className="btn btn-primary" onClick={doCheckin}>ตกลง</button>
-            {error && <p style={{color:'red'}}>{error}</p>}
+            )}
           </section>
         )}
       </main>
-      <div id="overlay" className="overlay"><div className="card-ok">เสร็จสิ้น ✔</div></div>
+
+      <div id="overlay" className="overlay">
+        <div className="card-ok">
+          <div className="success-icon"><CheckCircle2 size={64} color="#22c55e" /></div>
+          <h2 className="ok-title">บันทึกเรียบร้อย</h2>
+          <p className="ok-hint">ข้อมูลผู้เข้าใช้งานสนามถูกจัดเก็บในระบบแล้ว</p>
+        </div>
+      </div>
     </div>
   );
 }

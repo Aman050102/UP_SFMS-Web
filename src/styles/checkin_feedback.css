@@ -208,3 +208,104 @@
     grid-template-columns: 1fr;
   }
 }
+/* src/styles/checkin_feedback.css */
+[data-page="checkin-feedback"].wrap {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.fb-card {
+  width: 100%;
+  max-width: 700px;
+  background: #fff;
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+}
+
+.fb-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #06b6d4, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.fb-basic {
+  background: #fdfbff;
+  border: 1px solid #f3e8ff;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.fb-basic-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.fb-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  display: block;
+}
+
+.fb-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.fb-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  font-family: inherit;
+  font-size: 15px;
+  transition: all 0.2s;
+  margin: 10px 0;
+}
+
+.fb-textarea:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.fb-btn-primary {
+  background: linear-gradient(90deg, #06b6d4, #ec4899);
+  color: #fff;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+  transition: transform 0.2s;
+}
+
+.fb-btn-primary:hover { transform: translateY(-2px); opacity: 0.95; }
+
+.fb-btn-ghost {
+  background: transparent;
+  color: #64748b;
+  padding: 14px 20px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .fb-basic-row { grid-template-columns: 1fr; gap: 10px; }
+  .fb-card { padding: 24px; }
+}

@@ -6,6 +6,7 @@ export default function StaffMenu() {
   const [displayName, setDisplayName] = useState("กำลังโหลด...");
 
   useEffect(() => {
+    // ดึงชื่อจาก localStorage มาแสดงผล
     const dn = localStorage.getItem("display_name") || "เจ้าหน้าที่";
     setDisplayName(dn);
   }, []);
@@ -13,7 +14,6 @@ export default function StaffMenu() {
   return (
     <div data-page="staff_menu">
       <main>
-
         <section className="grid" aria-label="เมนูด่วน">
           <a className="tile" href="/checkin_report">
             <div className="tile-inner">
@@ -31,7 +31,8 @@ export default function StaffMenu() {
             </div>
           </a>
 
-          <a className="tile" href="/staff_equipment">
+          {/* ลิงก์ที่ปรับให้ตรงกับ API/Frontend Route */}
+          <a className="tile" href="/staff/equipment">
             <div className="tile-inner">
               <Package size={60} strokeWidth={2.5} color="#5f5aa2" />
               <b>จัดการอุปกรณ์กีฬา</b>
